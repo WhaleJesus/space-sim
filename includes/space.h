@@ -2,50 +2,74 @@
 #define SPACE_H
 
 #include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <limits.h>
 #include <stdbool.h>
+#include <string.h>
+#include <ctype.h>
+#include <fcntl.h>
 
-typedef struct s_resource
+typedef struct	s_char
 {
-    char *name;
-    int amount;
-} t_resource;
+	char			*name;
+	int				hp;
+	int				attack;
+	struct s_char	*prev;
+	struct s_char	*next;
+}	t_char;
 
-typedef struct s_building
+typedef struct	s_location
 {
-    char *name;
-    int lvl;
-    t_resource *buildResources;
-} t_building;
+	char				*name;
+	char				*description;
+	char				**options;
+	int					x;
+	int					y;
+	struct s_location	*north;
+	struct s_location	*east;
+	struct s_location	*south;
+	struct s_location	*west;
+}	t_location;
 
-typedef struct s_planet
+typedef struct	s_data
 {
-    bool settlement;
-    int settlement_size;
-    int planet_size;
-    t_building *buildings;
-    t_resource *resources;
-} t_planet;
+	struct s_char 		*char_main;
+	struct s_char		*enemies;
+	struct s_location	*map;
+	struct s_location	*current_location;
+	int					exit;
+}	t_data;
 
-typedef struct s_sector
-{
-    int n_planet;
-    t_planet **planets;
-} t_sector;
+// init
+void	init_data(t_data *data);
+t_char	*copy_enemy(t_char *enemy_tmp);
+t_char	*get_enemy(t_char *enemies, char *name);
 
-typedef struct s_worldmap
-{
-    int width;
-    int height;
-    t_sector **map;
-} t_worldmap;
+// input
+void 	clear_console(void);
+char	*get_input(char *msg);
+int		get_input_int(char *msg);
 
-typedef struct s_data
-{
-    t_worldmap *map;
-    t_resource **resources;
-    t_building **buildings;
-} t_data;
+// free
+void	free_data(t_data *data);
+void	free_char(t_char *character);
+void	free_map(t_data *data);
+void	free_location(t_location *location);
+
+// read
+void	read_location(t_location *location, FILE *fd);
+
+// utils
+char* ft_substr(char* arr, int start, int len);
+
+// battle
+int		battle(t_char *main, t_char *enemy_tmp);
+
+// location
+void	handle_location_option(t_data *data, t_location *location, int i);
+
+// display
+void	display_location(t_data *data);
 
 #endif

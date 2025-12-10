@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME		= philo
+NAME		= space
 
 CC			= cc
 CFLAGS		= -g -Wall -Wextra -Werror -Iinclude -pthread
@@ -20,12 +20,14 @@ OBJDIR		= objs
 LIBFTDIR	= libft
 LIBFT		= $(LIBFTDIR)/libft.a
 
-SRCFILES	= init_philo.c \
-			  time.c \
-			  run.c \
+SRCFILES	= init.c \
+			  input.c \
+			  battle.c \
 			  free.c \
-			  get_set.c \
-			  sync.c 
+			  display.c \
+			  location.c \
+			  read.c \
+			  utils.c 
 
 MAINFILE	= main.c
 

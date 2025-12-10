@@ -1,75 +1,42 @@
 #include "../includes/space.h"
 
-size_t strarrlen(char **arr)
+int	init_char_main(t_data *data)
 {
-    size_t i = 0;
+	t_char	*char_main;
 
-    while (arr[i])
-        i++;
-    return (i);
+	char_main = malloc(sizeof(t_char));
+	if (!char_main)
+		return (0);
+	char_main->next = NULL;
+	char_main->hp = 100;
+	char_main->attack = 10;
+	char_main->name = "";
+	while (strlen(char_main->name) == 0)
+	{
+		char *temp = get_input("Enter name");
+		if (strlen(temp) == 0)
+		{
+			free(temp);
+			printf("bad input.\n");
+		}
+		else
+			char_main->name = temp;
+	}
+	data->char_main = char_main;
+	return (1);
 }
 
-t_building *init_building(t_data *data, char *name, int lvl, t_resource **resources)
+int	main(int ac, char **av)
 {
-}
+	(void)ac;
+	(void)av;
+	t_data	data;
 
-void init_data_buildings(t_data *data)
-{
-    int i;
-    int max;
-    t_building **buildings;
-
-    i = 0;
-    max = 2;
-    buildings = malloc(sizeof(t_building) * max);
-    if (!buildings)
-        return (NULL);
-    buildings[0] = init_building;
-}
-
-init_data_resources(t_data *data)
-{
-    int i;
-    int max;
-    char *names[] = {"iron", "stone", "oxygen"};
-    t_resource **resources;
-    t_resource *resource;
-
-    i = 0;
-    max = strarrlen(names);
-    resources = malloc(sizeof(t_resource *) * max);
-    if (!resources)
-        return (NULL);
-    while (i < max)
-    {
-        resource = malloc(sizeof(t_resource));
-        if (!resource)
-        {
-            i = 0;
-            while (resources[i])
-                free(resources[i++]);
-            free(resources);
-            return (NULL);
-        }
-        resource->name = names[i];
-        resource->amount = -1;
-        resources[i] = resource;
-    }
-    data->resources = resources;
-}
-
-void init_data(t_data *data)
-{
-    data->map = NULL;
-    data->resources = NULL;
-    data->buildings = NULL;
-
-    data->resources = init_data_resources(data);
-}
-
-int main(int ac, char **av)
-{
-    t_data data;
-
-    init_data(&data);
+	init_data(&data);
+	init_char_main(&data);
+	while (!data.exit)
+		display_location(&data);
+//	battle(data.char_main, get_enemy(data.enemies, "Goblin"));
+	free_data(&data);
+	return (0);
 }

@@ -1,0 +1,36 @@
+plains
+a grassy field
+1
+move
+exit
+-end-
+forest
+lots of trees
+1
+move
+exit
+-end-
+bigger forest
+more trees
+1
+move
+exit
+-end-
+town
+some buildings
+1
+move
+exit
+-end-
+mountains
+big
+1
+move
+exit
+-end-
+cave
+it's very dark inside
+1
+move
+exit
+-end-
