@@ -26,6 +26,8 @@ typedef struct	s_location
 	char				**options;
 	int					x;
 	int					y;
+	struct s_location	*next;
+	struct s_location	*prev;
 	struct s_location	*north;
 	struct s_location	*east;
 	struct s_location	*south;

@@ -60,11 +60,11 @@ t_char	*get_enemy(t_char *enemies, char *name)
 	return (ret);
 }
 
-t_location	*get_map_location(t_data *data, int x, int y)
+t_location	*get_map_location(t_location *map, int x, int y)
 {
 	t_location	*location;
 
-	location = data->map;
+	location = map;
 	while (location->y < y)
 		location = location->south;
 	while (location->x < x)
@@ -111,12 +111,12 @@ void	init_data_locations(t_data *data)
 			{
 				if (y > 0)
 				{
-					location->north = get_map_location(data, x, y - 1);
+					location->north = get_map_location(data->map, x, y - 1);
 					location->north->south = location;
 				}
 				if (x > 0)
 				{
-					location->west = get_map_location(data, x - 1, y);
+					location->west = get_map_location(data->map, x - 1, y);
 					location->west->east = location;
 				}
 			}

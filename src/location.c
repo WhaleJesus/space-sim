@@ -2,38 +2,65 @@
 
 void	handle_location_move(t_data *data, t_location *location)
 {
-	int	input = -1;
+	int		input = -1;
+	int		i = 0;
+	char	*directions[4];
+	char	*direction;
 
 	if (location->north)
-		printf("1. North: %s\n", location->north->name);
+	{
+		printf("%i. North: %s\n", i + 1, location->north->name);
+		directions[i] = "north";
+		i++;
+	}
 	if (location->east)
-		printf("2. East: %s\n", location->east->name);
+	{
+		printf("%i. East: %s\n", i + 1, location->east->name);
+		directions[i] = "east";
+		i++;
+	}
 	if (location->south)
-		printf("3. South: %s\n", location->south->name);
+	{
+		printf("%i. South: %s\n", i + 1, location->south->name);
+		directions[i] = "south";
+		i++;
+	}
 	if (location->west)
-		printf("4. West: %s\n", location->west->name);
+	{
+		printf("%i. West: %s\n", i + 1, location->west->name);
+		directions[i] = "west";
+		i++;
+	}
+	printf("%i. back\n", i + 1);
+	directions[i] = "back";
 	while (input > -2)
 	{
-		input = get_input_int("Where do you want to go?\n");
-		if (input == 1 && location->north != NULL)
+		input = get_input_int("Where do you want to go?\n") - 1;
+		if (input >= 0 && input <= i)
 		{
-			data->current_location = location->north;
-			break ;
-		}
-		else if (input == 2 && location->east != NULL)
-		{
-			data->current_location = location->east;
-			break ;
-		}
-		else if (input == 3 && location->south != NULL)
-		{
-			data->current_location = location->south;
-			break ;
-		}
-		else if (input == 4 && location->west != NULL)
-		{
-			data->current_location = location->west;
-			break ;
+			direction = directions[input];
+			if (!strcmp(direction, "north"))
+			{
+				data->current_location = location->north;
+				break ;
+			}
+			if (!strcmp(direction, "east"))
+			{
+				data->current_location = location->east;
+				break ;
+			}
+			if (!strcmp(direction, "south"))
+			{
+				data->current_location = location->south;
+				break ;
+			}
+			if (!strcmp(direction, "west"))
+			{
+				data->current_location = location->west;
+				break ;
+			}
+			if (!strcmp(direction, "back"))
+				break ;
 		}
 		else 
 			printf("Can't go that way.\n");
