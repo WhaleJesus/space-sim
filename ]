@@ -65,10 +65,8 @@ t_location	*get_map_location(t_location *map, int x, int y)
 	t_location	*location;
 
 	if (!map || x < 0 || y < 0)
-		return (NULL);
+		return ;
 	location = map;
-	while (location->prev)
-		location = location->prev;
 	while (location->next && (location->x != x) && (location->y != y))
 		location = location->next;
 	if (location->x != x || location->y != y)
@@ -89,10 +87,10 @@ void	init_data_locations(t_data *data)
 		data->exit = 1;
 		return ;
 	}
-	while (y < data->map_height)
+	while (y < 3)
 	{
 		x = 0;
-		while (x < data->map_width)
+		while (x < 2)
 		{
 			location = malloc(sizeof(t_location) + 1);
 			if (!location)
@@ -104,7 +102,6 @@ void	init_data_locations(t_data *data)
 			read_location(location, fd);
 			location->x = x;
 			location->y = y;
-			location->prev = NULL;
 			location->next = NULL;
 			if (!data->map)
 				data->map = location;
@@ -126,8 +123,6 @@ void	init_data(t_data *data)
 	data->char_main = NULL;
 	data->enemies = NULL;
 	data->map = NULL;
-	data->map_width = 2;
-	data->map_height = 3;
 	data->exit = 0;
 	init_data_enemies(data);
 	init_data_locations(data);

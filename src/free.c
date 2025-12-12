@@ -27,22 +27,15 @@ void	free_map(t_data *data)
 {
 	t_location	*location;
 	t_location	*tmp;
-	t_location	*tmp2;
 
 	if (data->map)
 	{
 		location = data->map;
-		tmp = location;
-		while (tmp)
+		while (location)
 		{
-			tmp = location->south;
-			while (location)
-			{
-				tmp2 = location;
-				location = location->east;
-				free_location(tmp2);
-			}
-			location = tmp;
+			tmp = location;
+			location = location->next;
+			free_location(tmp);
 		}
 	}
 }

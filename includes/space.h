@@ -28,10 +28,6 @@ typedef struct	s_location
 	int					y;
 	struct s_location	*next;
 	struct s_location	*prev;
-	struct s_location	*north;
-	struct s_location	*east;
-	struct s_location	*south;
-	struct s_location	*west;
 }	t_location;
 
 typedef struct	s_data
@@ -39,6 +35,8 @@ typedef struct	s_data
 	struct s_char 		*char_main;
 	struct s_char		*enemies;
 	struct s_location	*map;
+	int					map_width;
+	int					map_height;
 	struct s_location	*current_location;
 	int					exit;
 }	t_data;
@@ -69,7 +67,8 @@ char* ft_substr(char* arr, int start, int len);
 int		battle(t_char *main, t_char *enemy_tmp);
 
 // location
-void	handle_location_option(t_data *data, t_location *location, int i);
+void		handle_location_option(t_data *data, t_location *location, int i);
+t_location	*get_map_location(t_location *map, int x, int y);
 
 // display
 void	display_location(t_data *data);
