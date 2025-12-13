@@ -19,3 +19,18 @@ char* ft_substr(char* arr, int start, int len)
 	str[j] = '\0';
 	return(str);
 }
+
+char *ft_strdup(char *s)
+{
+    char *dup;
+
+    if (!s)
+        return NULL;
+
+    dup = (char *)malloc(strlen(s) + 1);
+    if (!dup)
+        return NULL;
+
+    strcpy(dup, s);
+    return dup;
+}

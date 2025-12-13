@@ -9,7 +9,7 @@ void	handle_location_move(t_data *data, t_location *location)
 
 	if (location->y > 0)
 	{
-		printf("%i. North: %s\n", i + 1, get_location(data->map, location->x, location->y - 1));
+		printf("%i. North: %s\n", i + 1, get_map_location(data->map, location->x, location->y - 1)->name);
 		directions[i] = "north";
 		i++;
 	}
@@ -41,22 +41,22 @@ void	handle_location_move(t_data *data, t_location *location)
 			direction = directions[input];
 			if (!strcmp(direction, "north"))
 			{
-				data->current_location = get_map_location(data->map, x, y -1);
+				data->current_location = get_map_location(data->map, location->x, location->y -1);
 				break ;
 			}
 			if (!strcmp(direction, "east"))
 			{
-				data->current_location = get_map_location(data->map, x + 1, y);
+				data->current_location = get_map_location(data->map, location->x + 1, location->y);
 				break ;
 			}
 			if (!strcmp(direction, "south"))
 			{
-				data->current_location = get_map_location(data->map, x, y + 1;
+				data->current_location = get_map_location(data->map, location->x, location->y + 1);
 				break ;
 			}
 			if (!strcmp(direction, "west"))
 			{
-				data->current_location = get_map_location(data->map, x - 1, y);;
+				data->current_location = get_map_location(data->map, location->x - 1, location->y);;
 				break ;
 			}
 			if (!strcmp(direction, "back"))

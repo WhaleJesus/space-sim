@@ -11,15 +11,22 @@ void	free_location(t_location *location)
 {
 	int	i;
 
-	free(location->name);
-	free(location->description);
+	if (!location)
+		return ;
+	if (location->name)
+		free(location->name);
+	if (location->description)
+		free(location->description);
 	i = 0;
-	while (location->options[i])
+	if (location->options)
 	{
-		free(location->options[i]);
-		i++;
+		while (location->options[i])
+		{
+			free(location->options[i]);
+			i++;
+		}
+		free(location->options);
 	}
-	free(location->options);
 	free(location);
 }
 
