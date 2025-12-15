@@ -70,9 +70,23 @@ void	handle_location_move(t_data *data, t_location *location)
 void	handle_location_option(t_data *data, t_location *location, int i)
 {
 	char	*option = location->options[i];
+	int		r;
 
 	if (!strcmp(option, "move"))
 		handle_location_move(data, location);
+	if (!strcmp(option, "battle"))
+	{
+		r = rand_range(0, char_arr_len(location->enemies) - 1);
+		printf("debug: r: %i len: %i\n", r, char_arr_len(location->enemies));
+		r = battle(data->char_main, get_enemy(data->enemies, location->enemies[r]));
+		if (r == 0)
+		{
+			get_input_int("you died.\npress enter to continue");
+			data->exit = 1;
+		}
+		else 
+			printf("debug: battle: %i\n", r);
+	}
 	if (!strcmp(option, "exit"))
 		data->exit = 1;
 }

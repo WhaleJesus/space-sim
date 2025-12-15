@@ -9,6 +9,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <fcntl.h>
+#include <time.h>
 
 typedef struct	s_char
 {
@@ -45,6 +46,9 @@ typedef struct	s_data
 // init
 void		init_data(t_data *data);
 
+// init location
+t_location	*init_location_plains(int x, int y);
+
 // get
 t_char		*copy_enemy(t_char *enemy_tmp);
 t_char		*get_enemy(t_char *enemies, char *name);
@@ -58,6 +62,8 @@ int			get_input_int(char *msg);
 // free
 void		free_data(t_data *data);
 void		free_char(t_char *character);
+void		free_char_array(char **arr);
+void		free_location(t_location *location);
 void		free_map(t_data *data);
 void		free_location(t_location *location);
 
@@ -65,8 +71,11 @@ void		free_location(t_location *location);
 void		read_location(t_location *location, FILE *fd);
 
 // utils
-char* 		ft_substr(char* arr, int start, int len);
+char		*ft_substr(char* arr, int start, int len);
 char 		*ft_strdup(char *s);
+int			char_arr_len(char **arr);
+char		**add_option(char **arr, char *option);
+int 		rand_range(int min, int max);
 
 // battle
 int			battle(t_char *main, t_char *enemy_tmp);

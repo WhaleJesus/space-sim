@@ -1,6 +1,6 @@
 #include "../includes/space.h"
 
-void	init_location_standard(char *name, char *description, int x, int y)
+t_location	*init_location_base(char *name, char *description, int x, int y)
 {
 	t_location	*location;
 
@@ -26,5 +26,32 @@ void	init_location_standard(char *name, char *description, int x, int y)
 		free_location(location);
 		return (NULL);
 	}
+	return (location);
+}
+
+t_location	*init_location_plains(int x, int y)
+{
+	t_location	*location;
+	char		**options;
+
+	location = init_location_base("plains", "lots of grass", x, y);
+	if (!location)
+		return (NULL);
+	options = add_option(location->options, "battle");
+	if (!options)
+	{
+		free_location(location);
+		return (NULL);
+	}
+	free_char_array(location->options);
+	location->options = options;
+	location->enemies = (char **)malloc(sizeof(char *) * 2);
+	if (!location->enemies)
+	{
+		free_location(location);
+		return (NULL);
+	}
+	location->enemies[0] = ft_strdup("goblin");;
+	location->enemies[1] = NULL;
 	return (location);
 }

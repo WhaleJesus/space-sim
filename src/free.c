@@ -7,6 +7,21 @@ void	free_char(t_char *character)
 	free(character);
 }
 
+void	free_char_array(char **arr)
+{
+	int	i = 0;
+
+	if (arr)
+	{
+		while (arr[i])
+		{
+			free(arr[i]);
+			i++;
+		}
+		free(arr);
+	}
+}
+
 void	free_location(t_location *location)
 {
 	int	i;
@@ -18,15 +33,8 @@ void	free_location(t_location *location)
 	if (location->description)
 		free(location->description);
 	i = 0;
-	if (location->options)
-	{
-		while (location->options[i])
-		{
-			free(location->options[i]);
-			i++;
-		}
-		free(location->options);
-	}
+	free_char_array(location->options);
+	free_char_array(location->enemies);
 	free(location);
 }
 

@@ -34,6 +34,7 @@ int	main(int ac, char **av)
 
 	init_data(&data);
 	init_char_main(&data);
+	srand(time(NULL));   // seed once
 	while (!data.exit)
 		display_location(&data);
 //	battle(data.char_main, get_enemy(data.enemies, "Goblin"));

@@ -18,7 +18,7 @@ t_char	*init_char(char *name, int hp, int attack)
 
 void	init_data_enemies(t_data *data)
 {
-	data->enemies = init_char("Goblin", 25, 3);
+	data->enemies = init_char("goblin", 25, 3);
 }
 
 
@@ -35,30 +35,20 @@ void	init_data_locations(t_data *data)
 {
 	int			y = 0;
 	int			x;
-	FILE		*fd;
 	t_location	*location;
 
-	fd = fopen("files/map.txt", "r");
-	if (!fd)
-	{
-		data->exit = 1;
-		return ;
-	}
 	while (y < data->map_height)
 	{
 		x = 0;
 		while (x < data->map_width)
 		{
-			location = malloc(sizeof(t_location) + 1);
+			location = init_location_plains(x, y);
 			if (!location)
 			{
-				free(location);
 				free_map(data);
+				data->exit = 1;
 				return ;
 			}
-			read_location(location, fd);
-			location->x = x;
-			location->y = y;
 			location->prev = NULL;
 			location->next = NULL;
 			if (!data->map)
@@ -73,7 +63,6 @@ void	init_data_locations(t_data *data)
 		}
 		y++;
 	}
-	fclose(fd);
 }
 
 void	init_data(t_data *data)

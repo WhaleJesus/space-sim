@@ -1,12 +1,28 @@
 #include "../includes/space.h"
 
+void	attack(t_char *main, t_char *enemy)
+{
+	int	hp;
+	int	attack;
+
+	hp = enemy->hp;
+	attack = main->attack;
+	if (hp < attack)
+		attack = hp;
+	hp -= attack;
+	printf("%s attacks %s for %i damage!\n", main->name, enemy->name, attack);
+	enemy->hp = hp;
+}
+
 int	battle(t_char *main, t_char *enemy)
 {
 	int		option;
 	int		ret;
 
-	if (!main || !enemy)
+	if (!main)
 		return (-1);
+	if (!enemy)
+		return (-2);
 	clear_console();
 	while (main->hp > 0 && enemy->hp > 0)
 	{
@@ -21,8 +37,7 @@ int	battle(t_char *main, t_char *enemy)
 		if (option == 1)
 		{
 			clear_console();
-			printf("%s attacks %s for %i damage!\n", main->name, enemy->name, main->attack);
-			enemy->hp -= main->attack;
+			attack(main, enemy);
 			if (enemy->hp <= 0)
 			{
 				printf("%s was defeated!\n", enemy->name);
@@ -30,8 +45,7 @@ int	battle(t_char *main, t_char *enemy)
 				break ;
 			}
 		}
-		main->hp -= enemy->attack;
-		printf("%s attacks %s for %i damage!\n", enemy->name, main->name, enemy->attack);
+		attack(enemy, main);
 	}
 	free_char(enemy);
 	if (main->hp <= 0)
