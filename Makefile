@@ -29,7 +29,8 @@ SRCFILES	= init.c \
 			  read.c \
 			  utils.c \
 			  get.c \
-			  init_location.c 
+			  init_location.c \
+			  item.c 
 
 MAINFILE	= main.c
 

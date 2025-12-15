@@ -13,12 +13,30 @@
 
 typedef struct	s_char
 {
-	char			*name;
-	int				hp;
-	int				attack;
-	struct s_char	*prev;
-	struct s_char	*next;
+	char				*name;
+	int					hp;
+	int					attack;
+	struct s_inventory	*inventory;
+	struct s_char		*prev;
+	struct s_char		*next;
 }	t_char;
+
+typedef struct	s_item
+{
+	char			*name;
+	char			*description;
+	char			*type;
+	int				stat;
+	struct s_item	*next;
+	struct s_item	*prev;
+}	t_item;
+
+typedef struct	s_inventory
+{
+	struct s_item	*item;
+	int				size;
+	int				maxSize;
+}	t_inventory;
 
 typedef struct	s_location
 {
@@ -26,6 +44,7 @@ typedef struct	s_location
 	char				*description;
 	char				**options;
 	char				**enemies;
+	char				**characters;
 	int					x;
 	int					y;
 	struct s_location	*next;
@@ -34,17 +53,22 @@ typedef struct	s_location
 
 typedef struct	s_data
 {
-	struct s_char 		*char_main;
-	struct s_char		*enemies;
-	struct s_location	*map;
-	int					map_width;
-	int					map_height;
-	struct s_location	*current_location;
-	int					exit;
+	struct s_char 			*char_main;
+	struct s_char			*enemies;
+	struct s_inventory		*inventory;
+	struct s_location		*map;
+	int						map_width;
+	int						map_height;
+	int						inventory_base_size;
+	struct s_location		*current_location;
+	int						exit;
 }	t_data;
 
 // init
 void		init_data(t_data *data);
+t_inventory	*init_inventory(int maxSize);
+t_item		*init_item(char *name, char *description, char *type, int stat);
+t_char		*init_char(t_data *data, char *name, int hp, int attack);
 
 // init location
 t_location	*init_location_plains(int x, int y);
@@ -52,6 +76,7 @@ t_location	*init_location_plains(int x, int y);
 // get
 t_char		*copy_enemy(t_char *enemy_tmp);
 t_char		*get_enemy(t_char *enemies, char *name);
+t_item		*get_item_by_name(t_item *src, char *name);
 t_location	*get_map_location(t_location *map, int x, int y);
 
 // input
@@ -61,7 +86,9 @@ int			get_input_int(char *msg);
 
 // free
 void		free_data(t_data *data);
-void		free_char(t_char *character);
+void		free_character(t_char *character);
+void		free_item(t_item *item);
+void		free_inventory(t_inventory *inv);
 void		free_char_array(char **arr);
 void		free_location(t_location *location);
 void		free_map(t_data *data);
@@ -76,12 +103,17 @@ char 		*ft_strdup(char *s);
 int			char_arr_len(char **arr);
 char		**add_option(char **arr, char *option);
 int 		rand_range(int min, int max);
+char 		*format_width(const char *src, size_t size);
 
 // battle
 int			battle(t_char *main, t_char *enemy_tmp);
 
 // location
 void		handle_location_option(t_data *data, t_location *location, int i);
+
+// item
+void		add_item(t_item *dst, t_item *item);
+int			inventory_add_item(t_inventory *inv, t_item *item);
 
 // display
 void		display_location(t_data *data);

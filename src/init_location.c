@@ -19,6 +19,7 @@ t_location	*init_location_base(char *name, char *description, int x, int y)
 	location->options[1] = ft_strdup("exit");
 	location->options[2] = NULL;
 	location->enemies = NULL;
+	location->characters = NULL;
 	location->x = x;
 	location->y = y;
 	if (!location->name || !location->description || !location->options[0] || !location->options[1])

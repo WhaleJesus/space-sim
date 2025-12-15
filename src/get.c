@@ -39,6 +39,25 @@ t_char	*get_enemy(t_char *enemies, char *name)
 	return (ret);
 }
 
+t_item	*get_item_by_name(t_item *src, char *name)
+{
+	t_item	*dst;
+	t_item	*head;
+
+	dst = NULL;
+	head = src;
+	while (head)
+	{
+		if (!strcmp(head->name, name))
+		{
+			dst = init_item(head->name, head->description, head->type, head->stat);
+			break ;
+		}
+		head = head->next;
+	}
+	return (dst);
+}
+
 t_location	*get_map_location(t_location *map, int x, int y)
 {
 	t_location	*location;

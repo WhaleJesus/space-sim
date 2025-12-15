@@ -8,8 +8,10 @@ int	init_char_main(t_data *data)
 	if (!char_main)
 		return (0);
 	char_main->next = NULL;
+	char_main->prev = NULL;
 	char_main->hp = 100;
 	char_main->attack = 10;
+	char_main->inventory = init_inventory(data->inventory_base_size);
 	char_main->name = "";
 	while (strlen(char_main->name) == 0)
 	{

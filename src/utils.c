@@ -86,3 +86,46 @@ char *ft_strdup(char *s)
     strcpy(dup, s);
     return dup;
 }
+
+char *format_width(const char *src, size_t size)
+{
+    char    *out;
+    size_t  len;
+    size_t  i;
+
+    if (!src || size == 0)
+        return NULL;
+
+    out = (char *)malloc(size + 1);
+    if (!out)
+        return NULL;
+
+    len = strlen(src);
+
+    /* Case 1: string fits */
+    if (len <= size)
+    {
+        memcpy(out, src, len);
+        for (i = len; i < size; i++)
+            out[i] = ' ';
+    }
+    /* Case 2: string too long */
+    else
+    {
+        if (size <= 3)
+        {
+            for (i = 0; i < size; i++)
+                out[i] = '.';
+        }
+        else
+        {
+            memcpy(out, src, size - 3);
+            out[size - 3] = '.';
+            out[size - 2] = '.';
+            out[size - 1] = '.';
+        }
+    }
+
+    out[size] = '\0';
+    return out;
+}

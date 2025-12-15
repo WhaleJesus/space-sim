@@ -47,7 +47,7 @@ int	battle(t_char *main, t_char *enemy)
 		}
 		attack(enemy, main);
 	}
-	free_char(enemy);
+	free_character(enemy);
 	if (main->hp <= 0)
 		ret = 0;
 	else

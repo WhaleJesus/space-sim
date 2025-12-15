@@ -1,9 +1,42 @@
 #include "../includes/space.h"
 
-void	free_char(t_char *character)
+void	free_item(t_item *item)
+{
+	if (!item)
+		return ;
+	if (item->name)
+		free(item->name);
+	if (item->description)
+		free(item->description);
+	if (item->type)
+		free(item->type);
+	free(item);
+}
+
+void	free_inventory(t_inventory *inv)
+{
+	t_item	*tmp;
+
+	if (!inv)
+		return;
+	if (inv->item)
+	{
+		while (inv->item)
+		{
+			tmp = inv->item;
+			inv->item = inv->item->next;
+			free_item(tmp);
+		}
+	}
+	free(inv);
+}
+
+void	free_character(t_char *character)
 {
 	if (character->name)
 		free(character->name);
+	if (character->inventory)
+		free_inventory(character->inventory);
 	free(character);
 }
 
@@ -59,13 +92,12 @@ void	free_data(t_data *data)
 {
 	t_char	*tmp;
 
-	free_char(data->char_main);
-
+	free_character(data->char_main);
 	while (data->enemies)
 	{
 		tmp = data->enemies;
 		data->enemies = data->enemies->next;
-		free_char(tmp);
+		free_character(tmp);
 	}
 	free_map(data);
 }
