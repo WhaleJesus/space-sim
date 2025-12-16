@@ -6,7 +6,7 @@ void	attack(t_char *main, t_char *enemy)
 	int	attack;
 
 	hp = enemy->hp;
-	attack = main->attack;
+	attack = main->weapon->stat;
 	if (hp < attack)
 		attack = hp;
 	hp -= attack;

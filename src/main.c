@@ -3,17 +3,10 @@
 int	init_char_main(t_data *data)
 {
 	t_char	*char_main;
+	char	*name;
 
-	char_main = malloc(sizeof(t_char));
-	if (!char_main)
-		return (0);
-	char_main->next = NULL;
-	char_main->prev = NULL;
-	char_main->hp = 100;
-	char_main->attack = 10;
-	char_main->inventory = init_inventory(data->inventory_base_size);
-	char_main->name = "";
-	while (strlen(char_main->name) == 0)
+	name = "";
+	while (strlen(name) == 0)
 	{
 		char *temp = get_input("Enter name");
 		if (strlen(temp) == 0)
@@ -22,8 +15,22 @@ int	init_char_main(t_data *data)
 			printf("bad input.\n");
 		}
 		else
-			char_main->name = temp;
+			name = temp;
 	}
+	char_main = init_char(data, name, 100, "knife");
+	free(name);
+	if (!char_main)
+		return (0);
+	// debug
+	for (int i = 0; i < 23; i++)
+	{
+		int	j;
+		t_item	*tmp = get_item_by_name(data->inventory->item, "knife");
+		j = inventory_add_item(char_main->inventory, tmp);
+		if (!j)
+			free_item(tmp);
+	}
+	// debug
 	data->char_main = char_main;
 	return (1);
 }
@@ -36,6 +43,8 @@ int	main(int ac, char **av)
 
 	init_data(&data);
 	init_char_main(&data);
+	print_inventory(data.char_main->inventory);
+	print_inventory(data.enemies->inventory);
 	srand(time(NULL));   // seed once
 	while (!data.exit)
 		display_location(&data);

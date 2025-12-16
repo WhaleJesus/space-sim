@@ -1,8 +1,29 @@
 #include "../includes/space.h"
 
-t_char	*copy_enemy(t_char *enemy_tmp)
+t_inventory	*copy_inventory(t_data *data, t_inventory *src)
+{
+	t_inventory	*inv;
+	t_item		*head;
+	t_item		*tmp;
+
+	if (!src)
+		return (NULL);
+	inv = init_inventory(src->maxSize);
+	head = src->item;
+	while (head)
+	{
+		tmp = get_item_by_name(data->inventory->item, head->name);
+		inventory_add_item(inv, tmp);
+		head = head->next;
+	}
+	return (inv);
+}
+
+t_char	*copy_enemy(t_data *data, t_char *enemy_tmp)
 {
 	t_char	*enemy = malloc(sizeof(t_char));
+	t_item	*weapon;
+
 	if (!enemy)
 		return (NULL);
 	enemy->name = malloc((sizeof(char) * strlen(enemy_tmp->name)) + 1);
@@ -14,13 +35,15 @@ t_char	*copy_enemy(t_char *enemy_tmp)
 	strcpy(enemy->name, enemy_tmp->name);
 	enemy->name[strlen(enemy->name)] = '\0';
 	enemy->hp = enemy_tmp->hp;
-	enemy->attack = enemy_tmp->attack;
+	enemy->inventory = copy_inventory(data, enemy_tmp->inventory);
+	weapon = get_item_by_pos
+	equip_weapon_from_inv(enemy, enemy->inventory, enemy_tmp->weapon->name);
 	enemy->prev = NULL;
 	enemy->next = NULL;
 	return (enemy);
 }
 
-t_char	*get_enemy(t_char *enemies, char *name)
+t_char	*get_enemy(t_data *data, t_char *enemies, char *name)
 {
 	t_char *head;
 	t_char *ret;
@@ -31,7 +54,7 @@ t_char	*get_enemy(t_char *enemies, char *name)
 	{
 		if (strcmp(head->name, name) == 0)
 		{
-			ret = copy_enemy(head);
+			ret = copy_enemy(data, head);
 			break ;
 		}
 		head = head->next;
@@ -39,18 +62,57 @@ t_char	*get_enemy(t_char *enemies, char *name)
 	return (ret);
 }
 
-t_item	*get_item_by_name(t_item *src, char *name)
+t_item	*get_item_by_pos(t_item *src, int pos)
+{
+	int		i = 1;
+	t_item	*head;
+
+	if (!src || pos < 1)
+		return (NULL);
+	head = src;
+	while (head && i != pos)
+	{
+		head = head->next;
+		i++;
+	}
+	if (i != pos)
+		return (NULL);
+	return (head);
+}
+
+int	get_item_pos_by_name(t_item *src, char *name)
+{
+	t_item	*head;
+	int		ret;
+
+	if (!src)
+		return (0);
+	head = src;
+	ret = 1;
+	while (head)
+	{
+		if (!strcmp(head->name, name))
+			return (ret);
+		ret++;
+		head = head->next;
+	}
+	return (0);
+}
+
+t_item	*get_item_by_name(t_data *data, t_item *src, char *name)
 {
 	t_item	*dst;
 	t_item	*head;
 
+	if (!src || strlen(name) < 1)
+		return (NULL);
 	dst = NULL;
 	head = src;
 	while (head)
 	{
 		if (!strcmp(head->name, name))
 		{
-			dst = init_item(head->name, head->description, head->type, head->stat);
+			dst = init_item(data, head->name, head->description, head->type, head->stat, head->can_drop);
 			break ;
 		}
 		head = head->next;

@@ -87,7 +87,31 @@ char *ft_strdup(char *s)
     return dup;
 }
 
-char *format_width(const char *src, size_t size)
+char	*strjoin(char *s1, char *s2)
+{
+	size_t	len1;
+	size_t	len2;
+	size_t	i;
+	char	*ret;
+
+	if (!s1 || !s2)
+		return (NULL);
+	len1 = strlen(s1);
+	len2 = strlen(s2);
+	ret = (char *)malloc(sizeof(char) * (len1 + len2 + 1));
+	if (!ret)
+		return (NULL);
+	i = -1;
+	while (++i < len1)
+		ret[i] = s1[i];
+	i = -1;
+	while (++i < len2)
+		ret[len1 + i] = s2[i];
+	ret[len1 + i] = '\0';
+	return (ret);
+}
+
+char	*format_width(const char *src, size_t size)
 {
     char    *out;
     size_t  len;
@@ -105,7 +129,8 @@ char *format_width(const char *src, size_t size)
     /* Case 1: string fits */
     if (len <= size)
     {
-        memcpy(out, src, len);
+		for (i = 0; i < len; i++)
+			out[i] = src[i];
         for (i = len; i < size; i++)
             out[i] = ' ';
     }
@@ -114,18 +139,27 @@ char *format_width(const char *src, size_t size)
     {
         if (size <= 3)
         {
-            for (i = 0; i < size; i++)
-                out[i] = '.';
+			size_t	i = 0;
+            while (i < len && i < size)
+			{
+                out[i] = src[i];
+				i++;
+			}
+			while (i < size)
+			{
+				out[i] = ' ';
+				i++;
+			}
         }
         else
         {
-            memcpy(out, src, size - 3);
+			for (i = 0; i < size - 3; i++)
+				out[i] = src[i];
             out[size - 3] = '.';
             out[size - 2] = '.';
             out[size - 1] = '.';
         }
     }
-
     out[size] = '\0';
     return out;
 }

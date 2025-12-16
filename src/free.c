@@ -57,15 +57,12 @@ void	free_char_array(char **arr)
 
 void	free_location(t_location *location)
 {
-	int	i;
-
 	if (!location)
 		return ;
 	if (location->name)
 		free(location->name);
 	if (location->description)
 		free(location->description);
-	i = 0;
 	free_char_array(location->options);
 	free_char_array(location->enemies);
 	free(location);
@@ -99,5 +96,6 @@ void	free_data(t_data *data)
 		data->enemies = data->enemies->next;
 		free_character(tmp);
 	}
+	free_inventory(data->inventory);
 	free_map(data);
 }
