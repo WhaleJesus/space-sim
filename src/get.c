@@ -12,7 +12,7 @@ t_inventory	*copy_inventory(t_data *data, t_inventory *src)
 	head = src->item;
 	while (head)
 	{
-		tmp = get_item_by_name(data->inventory->item, head->name);
+		tmp = get_item_by_name(data, data->inventory->item, head->name);
 		inventory_add_item(inv, tmp);
 		head = head->next;
 	}
@@ -35,9 +35,16 @@ t_char	*copy_enemy(t_data *data, t_char *enemy_tmp)
 	strcpy(enemy->name, enemy_tmp->name);
 	enemy->name[strlen(enemy->name)] = '\0';
 	enemy->hp = enemy_tmp->hp;
+	enemy->hp_max = enemy_tmp->hp_max;
+	enemy->intelligence = enemy_tmp->intelligence;
+	enemy->strength = enemy_tmp->strength;
+	enemy->perception = enemy_tmp->perception;
+	enemy->charisma = enemy_tmp->charisma;
+	enemy->stealth = enemy_tmp->stealth;
+	enemy->speed = enemy_tmp->speed;
 	enemy->inventory = copy_inventory(data, enemy_tmp->inventory);
-	weapon = get_item_by_pos
-	equip_weapon_from_inv(enemy, enemy->inventory, enemy_tmp->weapon->name);
+	weapon = get_item_by_pos(enemy->inventory->item, get_item_pos_by_name(enemy->inventory->item, enemy_tmp->weapon->name));
+	equip_weapon_from_inv(enemy, enemy->inventory, weapon->id);
 	enemy->prev = NULL;
 	enemy->next = NULL;
 	return (enemy);

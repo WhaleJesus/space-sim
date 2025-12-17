@@ -20,7 +20,7 @@ int	equip_weapon_from_inv(t_char *c, t_inventory *inv, unsigned long id)
 {
 	t_item	*head;
 
-	if (!c || !inv || !name)
+	if (!c || !inv)
 		return (0);
 	head = inv->item;
 	while (head && head->id != id)
@@ -53,7 +53,7 @@ int	unequip_weapon(t_char *c)
 	}
 	if (!head)
 		return (0);
-	equip_weapon_from_inv(c, c->inventory, head->name);
+	equip_weapon_from_inv(c, c->inventory, head->id);
 	return (1);
 }
 
@@ -103,7 +103,7 @@ int	inventory_remove_item(t_inventory *inv, unsigned long id)
 	t_item	*head;
 	t_item	*tmp;
 
-	if (!inv || !inv->item || pos < 1)
+	if (!inv || !inv->item)
 		return (0);
 	head = inv->item;
 	while (head && head->id != id)

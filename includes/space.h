@@ -15,6 +15,14 @@ typedef struct	s_char
 {
 	char				*name;
 	int					hp;
+	int					hp_max;
+	int					intelligence;
+	int					strength;
+	int					perception;
+	int					charisma;
+	int					stealth;
+	int					speed;
+	int					dead;
 	struct s_item		*weapon;
 	struct s_inventory	*inventory;
 	struct s_char		*prev;
@@ -81,7 +89,7 @@ t_location	*init_location_plains(int x, int y);
 t_inventory	*copy_inventory(t_data *data, t_inventory *src);
 t_char		*copy_enemy(t_data *data, t_char *enemy_tmp);
 t_char		*get_enemy(t_data *data, t_char *enemies, char *name);
-t_item		*get_item_by_name(t_item *src, char *name);
+t_item		*get_item_by_name(t_data *data, t_item *src, char *name);
 t_item		*get_item_by_pos(t_item *src, int pos);
 int			get_item_pos_by_name(t_item *src, char *name);
 t_location	*get_map_location(t_location *map, int x, int y);
@@ -122,13 +130,18 @@ void		handle_location_option(t_data *data, t_location *location, int i);
 // item
 void		add_item(t_item *dst, t_item *item);
 int			inventory_add_item(t_inventory *inv, t_item *item);
-int			inventory_remove_item(t_inventory *inv, int	pos);
+int			inventory_remove_item(t_inventory *inv, unsigned long id);
 int			equip_weapon_from_inv(t_char *c, t_inventory *inv, unsigned long id);
 int			unequip_weapon(t_char *c);
 void		print_inventory(t_inventory *inv);
 
+// character
+void		character_heal(t_char *c, int amount);
+int			character_take_damage(t_char *c, int amount);
+
 // display
 void		display_location(t_data *data);
 void		display_inventory(t_char *c, t_inventory *inv);
+void		display_character(t_char *c);
 
 #endif

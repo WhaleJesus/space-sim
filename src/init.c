@@ -57,6 +57,14 @@ t_char	*init_char(t_data *data, char *name, int hp, char *weapon)
 	}
 	strcpy(character->name, name);
 	character->hp = hp;
+	character->hp_max = hp;
+	character->intelligence = 1;
+	character->strength = 1;
+	character->perception = 1;
+	character->charisma = 1;
+	character->stealth = 1;
+	character->speed = 1;
+	character->dead = 0;
 	character->weapon = NULL;
 	character->inventory = init_inventory(data->inventory_base_size);
 	if (!character->inventory)
@@ -64,13 +72,13 @@ t_char	*init_char(t_data *data, char *name, int hp, char *weapon)
 		free_character(character);
 		return (NULL);
 	}
-	fist = get_item_by_name(data->inventory->item, "fist");
+	fist = get_item_by_name(data, data->inventory->item, "fist");
 	inventory_add_item(character->inventory, fist);
 	if (!weapon)
 		equip_weapon_from_inv(character, character->inventory, fist->id);
 	else 
 	{
-		fist = get_item_by_name(data->inventory->item, weapon);
+		fist = get_item_by_name(data, data->inventory->item, weapon);
 		inventory_add_item(character->inventory, fist);
 		equip_weapon_from_inv(character, character->inventory, fist->id);
 	}

@@ -9,16 +9,17 @@ t_location	*init_location_base(char *name, char *description, int x, int y)
 		return (NULL);
 	location->name = ft_strdup(name);
 	location->description = ft_strdup(description);
-	location->options = (char **)malloc(sizeof(char *) * 4);
+	location->options = (char **)malloc(sizeof(char *) * 5);
 	if (!location->options)
 	{
 		free_location(location);
 		return (NULL);
 	}
 	location->options[0] = ft_strdup("move");
-	location->options[1] = ft_strdup("inventory");
-	location->options[2] = ft_strdup("exit");
-	location->options[3] = NULL;
+	location->options[1] = ft_strdup("character");
+	location->options[2] = ft_strdup("inventory");
+	location->options[3] = ft_strdup("exit");
+	location->options[4] = NULL;
 	location->enemies = NULL;
 	location->characters = NULL;
 	location->x = x;

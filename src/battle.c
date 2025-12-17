@@ -2,21 +2,49 @@
 
 void	attack(t_char *main, t_char *enemy)
 {
-	int	hp;
 	int	attack;
-
-	hp = enemy->hp;
+	
 	attack = main->weapon->stat;
-	if (hp < attack)
-		attack = hp;
-	hp -= attack;
-	printf("%s attacks %s for %i damage!\n", main->name, enemy->name, attack);
-	enemy->hp = hp;
+	printf("%s attacks\n", main->name);
+	character_take_damage(enemy, attack);
+}
+
+void	enemy_turn(t_char *main, t_char *enemy)
+{
+	if (enemy->dead || main->dead)
+		return ;
+	attack(enemy, main);
+}
+
+void	player_turn(t_char *main, t_char *enemy)
+{
+	int		option;
+
+	if (enemy->dead || main->dead)
+		return ;
+	printf("DEBUG: P %i E %i\n", main->speed, enemy->speed);
+	printf("%s\nhp: %i/%i\n\n%s\nhp: %i/%i\n\n", enemy->name, enemy->hp, enemy->hp_max, main->name, main->hp, main->hp_max);
+	printf("Options:\n1. Attack\n2. Inventory\n");
+	option = -1;
+	while (option < 1)
+	{
+		option = get_input_int("");
+		if (option < 1 || option > 2)
+		{
+			option = -1;
+			printf("wrong input.\n");
+		}
+	}
+	clear_console();
+	if (option == 1)
+		attack(main, enemy);
+	if (option == 2)
+		display_inventory(main, main->inventory);
+
 }
 
 int	battle(t_char *main, t_char *enemy)
 {
-	int		option;
 	int		ret;
 
 	if (!main)
@@ -24,31 +52,40 @@ int	battle(t_char *main, t_char *enemy)
 	if (!enemy)
 		return (-2);
 	clear_console();
-	while (main->hp > 0 && enemy->hp > 0)
+	while (!main->dead && !enemy->dead)
 	{
-		printf("%s\nhp: %i\n\n%s\nhp: %i\n\n", enemy->name, enemy->hp, main->name, main->hp);
-		option = -1;
-		while (option < 1)
+		if (main->speed > enemy->speed)
 		{
-			option = get_input_int("Options:\n1. Attack\n");
-			if (option < 1)
-				printf("wrong input.\n");
+			player_turn(main, enemy);
+			enemy_turn(main, enemy);
 		}
-		if (option == 1)
+		else if (main->speed < enemy->speed)
 		{
-			clear_console();
-			attack(main, enemy);
-			if (enemy->hp <= 0)
+			enemy_turn(main, enemy);
+			player_turn(main, enemy);
+		}
+		else 
+		{
+			int	diceRoll = rand_range(0, 1);
+			if (diceRoll == 0)
 			{
-				printf("%s was defeated!\n", enemy->name);
-				get_input_int("press enter to continue..");
-				break ;
+				player_turn(main, enemy);
+				enemy_turn(main, enemy);
+			}
+			else 
+			{
+				enemy_turn(main, enemy);
+				player_turn(main, enemy);
 			}
 		}
-		attack(enemy, main);
+		if (enemy->dead)
+		{
+			get_input_int("press enter to continue..");
+		}
 	}
+	clear_console();
 	free_character(enemy);
-	if (main->hp <= 0)
+	if (main->dead)
 		ret = 0;
 	else
 		ret = 1;

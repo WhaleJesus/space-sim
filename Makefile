@@ -30,7 +30,8 @@ SRCFILES	= init.c \
 			  utils.c \
 			  get.c \
 			  init_location.c \
-			  item.c 
+			  item.c \
+			  character.c 
 
 MAINFILE	= main.c
 

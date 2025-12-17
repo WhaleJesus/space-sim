@@ -74,6 +74,8 @@ void	handle_location_option(t_data *data, t_location *location, int i)
 
 	if (!strcmp(option, "move"))
 		handle_location_move(data, location);
+	if (!strcmp(option, "character"))
+		display_character(data->char_main);
 	if (!strcmp(option, "inventory"))
 		display_inventory(data->char_main, data->char_main->inventory);
 	if (!strcmp(option, "battle"))
@@ -86,8 +88,6 @@ void	handle_location_option(t_data *data, t_location *location, int i)
 			get_input_int("you died.\npress enter to continue");
 			data->exit = 1;
 		}
-		else 
-			printf("debug: battle: %i\n", r);
 	}
 	if (!strcmp(option, "exit"))
 		data->exit = 1;

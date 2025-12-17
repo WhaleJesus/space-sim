@@ -21,16 +21,17 @@ int	init_char_main(t_data *data)
 	free(name);
 	if (!char_main)
 		return (0);
-	// debug
+	inventory_add_item(char_main->inventory, get_item_by_name(data, data->inventory->item, "apple"));
+	/* debug
 	for (int i = 0; i < 23; i++)
 	{
 		int	j;
-		t_item	*tmp = get_item_by_name(data->inventory->item, "knife");
+		t_item	*tmp = get_item_by_name(data, data->inventory->item, "knife");
 		j = inventory_add_item(char_main->inventory, tmp);
 		if (!j)
 			free_item(tmp);
 	}
-	// debug
+	*/
 	data->char_main = char_main;
 	return (1);
 }

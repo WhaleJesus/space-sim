@@ -30,7 +30,7 @@ void	display_location(t_data *data)
 
 void	display_item(t_char *c, t_item *item)
 {
-	char	*options[4];
+	char	*options[5];
 	int		j = 0;
 	int		option = -1;
 	
@@ -44,7 +44,7 @@ void	display_item(t_char *c, t_item *item)
 		printf("-------------------\n");
 		printf("description: %s\n", item->description);
 		printf("-------------------\n");
-		printf("stat: %i\n", item->stat);
+		printf("stat: %i\n\n", item->stat);
 
 		if (item->equipped == 0)
 		{
@@ -55,6 +55,8 @@ void	display_item(t_char *c, t_item *item)
 		}
 		else 
 			options[++j] = "unequip";
+		if (!strcmp(item->type, "food"))
+			options[++j] = "eat";
 		options[++j] = "back";
 		options[++j] = NULL;
 		printf("options:\n");
@@ -73,6 +75,11 @@ void	display_item(t_char *c, t_item *item)
 				equip_weapon_from_inv(c, c->inventory, item->id);
 			else if (!strcmp(options[option], "unequip"))
 				unequip_weapon(c);
+			else if (!strcmp(options[option], "eat"))
+			{
+				character_heal(c, item->stat);
+				inventory_remove_item(c->inventory, item->id);
+			}
 			else if (!strcmp(options[option], "drop"))
 				inventory_remove_item(c->inventory, item->id);
 			else if (!strcmp(options[option], "back"))
@@ -188,4 +195,13 @@ void display_inventory(t_char *c, t_inventory *inv)
         else if (!strcmp(options[option], "back"))
             break;
     }
+	clear_console();
+}
+
+void	display_character(t_char *c) 
+{
+	clear_console();
+	printf("name: %s\n\nhp: %i/%i\n\nweapon: %s\nweapon damage: %i\n\ninventory: %i/%i\n", c->name, c->hp, c->hp_max, c->weapon->name, c->weapon->stat, c->inventory->size, c->inventory->maxSize);
+	get_input_int("press enter to go back.\n");
+	clear_console();
 }
