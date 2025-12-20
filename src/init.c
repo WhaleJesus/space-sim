@@ -1,6 +1,6 @@
 #include "../includes/space.h"
 
-t_item	*init_item(t_data *data, char *name, char *description, char *type, int stat, int can_drop)
+t_item	*init_item(t_data *data, char *name, char *description, char *type, int stat, char *c_stat, double stat_mult, int can_drop)
 {
 	t_item			*item;
 	unsigned long	id;
@@ -17,6 +17,8 @@ t_item	*init_item(t_data *data, char *name, char *description, char *type, int s
 	item->description = ft_strdup(description);
 	item->type = ft_strdup(type);
 	item->stat = stat;
+	item->stat_mult = stat_mult;
+	item->c_stat = c_stat;
 	item->equipped = 0;
 	item->can_drop = can_drop;
 	if (!item->name || !item->description || !item->type)
@@ -87,9 +89,32 @@ t_char	*init_char(t_data *data, char *name, int hp, char *weapon)
 	return (character);
 }
 
+void	init_character_stats(t_char *c, int intelligence, int strength, int perception, int charisma, int stealth, int speed)
+{
+	character_change_stat(c, "intelligence", intelligence);
+	character_change_stat(c, "strength", strength);
+	character_change_stat(c, "perception", perception);
+	character_change_stat(c, "charisma", charisma);
+	character_change_stat(c, "stealth", stealth);
+	character_change_stat(c, "speed", speed);
+}
+
+void	data_add_char(t_char *c, t_char *add)
+{
+	t_char *head;
+
+	if (!c || !add)
+		return ;
+	head = c;
+	while (head->next)
+		head = head->next;
+	head->next = add;
+	add->prev = head;
+}
+
 void	init_data_enemies(t_data *data)
 {
-	data->enemies = init_char(data, "goblin", 25, "knife");
+	data->enemies = init_goblin(data);
 }
 
 void	print_locations(t_location *location)
@@ -145,11 +170,11 @@ void	init_data_items(t_data *data)
 		data->exit = 1;
 		return ;
 	}
-	item = init_item(NULL, "knife", "a small rusty blade", "weapon", 3, 1);
+	item = init_item(NULL, "knife", "a small rusty blade", "weapon", 3, "speed", 1.2, 1);
 	inventory_add_item(data->inventory, item);
-	item = init_item(NULL, "fist", "just your bare hands", "weapon", 1, 0);
+	item = init_item(NULL, "fist", "just your bare hands", "weapon", 1, "strength", 0.5, 0);
 	inventory_add_item(data->inventory, item);
-	item = init_item(NULL, "apple", "should keep the doctor away", "food", 5, 1);
+	item = init_item(NULL, "apple", "should keep the doctor away", "food", 5, NULL, 0.0, 1);
 	inventory_add_item(data->inventory, item);
 }
 

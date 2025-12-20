@@ -33,7 +33,7 @@ t_char	*copy_enemy(t_data *data, t_char *enemy_tmp)
 		return (NULL);
 	}
 	strcpy(enemy->name, enemy_tmp->name);
-	enemy->name[strlen(enemy->name)] = '\0';
+	enemy->name[strlen(enemy->name) + 1] = '\0';
 	enemy->hp = enemy_tmp->hp;
 	enemy->hp_max = enemy_tmp->hp_max;
 	enemy->intelligence = enemy_tmp->intelligence;
@@ -42,7 +42,13 @@ t_char	*copy_enemy(t_data *data, t_char *enemy_tmp)
 	enemy->charisma = enemy_tmp->charisma;
 	enemy->stealth = enemy_tmp->stealth;
 	enemy->speed = enemy_tmp->speed;
+	enemy->dead = 0;
 	enemy->inventory = copy_inventory(data, enemy_tmp->inventory);
+	if (!enemy->inventory)
+	{
+		free_character(enemy);
+		return (NULL);
+	}
 	weapon = get_item_by_pos(enemy->inventory->item, get_item_pos_by_name(enemy->inventory->item, enemy_tmp->weapon->name));
 	equip_weapon_from_inv(enemy, enemy->inventory, weapon->id);
 	enemy->prev = NULL;
@@ -119,7 +125,7 @@ t_item	*get_item_by_name(t_data *data, t_item *src, char *name)
 	{
 		if (!strcmp(head->name, name))
 		{
-			dst = init_item(data, head->name, head->description, head->type, head->stat, head->can_drop);
+			dst = init_item(data, head->name, head->description, head->type, head->stat, head->c_stat, head->stat_mult, head->can_drop);
 			break ;
 		}
 		head = head->next;

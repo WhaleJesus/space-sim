@@ -4,7 +4,7 @@ void	attack(t_char *main, t_char *enemy)
 {
 	int	attack;
 	
-	attack = main->weapon->stat;
+	attack = item_stat(main, main->weapon);
 	printf("%s attacks\n", main->name);
 	character_take_damage(enemy, attack);
 }
@@ -35,7 +35,8 @@ void	player_turn(t_char *main, t_char *enemy)
 			printf("wrong input.\n");
 		}
 	}
-	clear_console();
+	if (!DEBUG)
+		clear_console();
 	if (option == 1)
 		attack(main, enemy);
 	if (option == 2)
@@ -51,6 +52,7 @@ int	battle(t_char *main, t_char *enemy)
 		return (-1);
 	if (!enemy)
 		return (-2);
+	if (!DEBUG)
 	clear_console();
 	while (!main->dead && !enemy->dead)
 	{
@@ -83,7 +85,8 @@ int	battle(t_char *main, t_char *enemy)
 			get_input_int("press enter to continue..");
 		}
 	}
-	clear_console();
+	if (!DEBUG)
+		clear_console();
 	free_character(enemy);
 	if (main->dead)
 		ret = 0;

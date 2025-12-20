@@ -23,3 +23,41 @@ int	character_take_damage(t_char *c, int amount)
 	}
 	return (1);
 }
+
+int	character_increment_stat(t_char *c, char *stat, int add)
+{
+	if (!strcmp(stat, "intelligence"))
+		c->intelligence += add;
+	else if (!strcmp(stat, "strength"))
+		c->strength += add;
+	else if (!strcmp(stat, "perception"))
+		c->perception += add;
+	else if (!strcmp(stat, "charisma"))
+		c->charisma += add;
+	else if (!strcmp(stat, "stealth"))
+		c->stealth += add;
+	else if (!strcmp(stat, "speed"))
+		c->speed += add;
+	else 
+		return (0);
+	return (1);
+}
+
+int	character_change_stat(t_char *c, char *stat, int add)
+{
+	if (!strcmp(stat, "intelligence"))
+		c->intelligence = add;
+	else if (!strcmp(stat, "strength"))
+		c->strength = add;
+	else if (!strcmp(stat, "perception"))
+		c->perception = add;
+	else if (!strcmp(stat, "charisma"))
+		c->charisma = add;
+	else if (!strcmp(stat, "stealth"))
+		c->stealth = add;
+	else if (!strcmp(stat, "speed"))
+		c->speed = add;
+	else 
+		return (0);
+	return (1);
+}

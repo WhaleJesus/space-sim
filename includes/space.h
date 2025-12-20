@@ -11,6 +11,8 @@
 #include <fcntl.h>
 #include <time.h>
 
+#define DEBUG 1
+
 typedef struct	s_char
 {
 	char				*name;
@@ -36,6 +38,8 @@ typedef struct	s_item
 	char			*description;
 	char			*type;
 	int				stat;
+	double			stat_mult;
+	char			*c_stat;
 	int				equipped;
 	int				can_drop;
 	struct s_item	*next;
@@ -79,11 +83,15 @@ typedef struct	s_data
 // init
 void		init_data(t_data *data);
 t_inventory	*init_inventory(int maxSize);
-t_item		*init_item(t_data *data, char *name, char *description, char *type, int stat, int can_drop);
+t_item		*init_item(t_data *data, char *name, char *description, char *type, int stat, char *c_stat, double stat_mult, int can_drop);
 t_char		*init_char(t_data *data, char *name, int hp, char *weapon);
+void		init_character_stats(t_char *c, int intelligence, int strength, int perception, int charisma, int stealth, int speed);
 
 // init location
 t_location	*init_location_plains(int x, int y);
+
+// init enemy
+t_char		*init_goblin(t_data *data);
 
 // get
 t_inventory	*copy_inventory(t_data *data, t_inventory *src);
@@ -134,10 +142,13 @@ int			inventory_remove_item(t_inventory *inv, unsigned long id);
 int			equip_weapon_from_inv(t_char *c, t_inventory *inv, unsigned long id);
 int			unequip_weapon(t_char *c);
 void		print_inventory(t_inventory *inv);
+int			item_stat(t_char *c, t_item *item);
 
 // character
 void		character_heal(t_char *c, int amount);
 int			character_take_damage(t_char *c, int amount);
+int			character_increment_stat(t_char *c, char *stat, int add);
+int			character_change_stat(t_char *c, char *stat, int add);
 
 // display
 void		display_location(t_data *data);

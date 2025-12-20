@@ -31,7 +31,8 @@ SRCFILES	= init.c \
 			  get.c \
 			  init_location.c \
 			  item.c \
-			  character.c 
+			  character.c \
+			  init_enemy.c 
 
 MAINFILE	= main.c
 

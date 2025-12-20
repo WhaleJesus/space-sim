@@ -77,7 +77,8 @@ void	display_item(t_char *c, t_item *item)
 				unequip_weapon(c);
 			else if (!strcmp(options[option], "eat"))
 			{
-				character_heal(c, item->stat);
+				int	stat = item_stat(c, item);
+				character_heal(c, stat);
 				inventory_remove_item(c->inventory, item->id);
 			}
 			else if (!strcmp(options[option], "drop"))

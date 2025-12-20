@@ -122,3 +122,31 @@ int	inventory_remove_item(t_inventory *inv, unsigned long id)
 	inv->size--;
 	return (1);
 }
+
+int	item_stat(t_char *c, t_item *item)
+{
+	int	stat;
+	int	c_stat;
+
+	if (!c || !item)
+		return (0);
+	stat = item->stat;
+	if (!item->c_stat)
+		return (stat);
+	if (!strcmp(item->c_stat, "intelligence"))
+		c_stat = c->intelligence;
+	else if (!strcmp(item->c_stat, "strength"))
+		c_stat = c->strength;
+	else if (!strcmp(item->c_stat, "perception"))
+		c_stat = c->perception;
+	else if (!strcmp(item->c_stat, "charisma"))
+		c_stat = c->charisma;
+	else if (!strcmp(item->c_stat, "stealth"))
+		c_stat = c->stealth;
+	else if (!strcmp(item->c_stat, "speed"))
+		c_stat = c->speed;
+	else 
+		c_stat = 0;
+	stat += c_stat * item->stat_mult;
+	return (stat);
+}
