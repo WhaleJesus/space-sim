@@ -33,7 +33,7 @@ t_char	*copy_enemy(t_data *data, t_char *enemy_tmp)
 		return (NULL);
 	}
 	strcpy(enemy->name, enemy_tmp->name);
-	enemy->name[strlen(enemy->name) + 1] = '\0';
+	enemy->name[strlen(enemy->name)] = '\0';
 	enemy->hp = enemy_tmp->hp;
 	enemy->hp_max = enemy_tmp->hp_max;
 	enemy->intelligence = enemy_tmp->intelligence;
@@ -49,6 +49,7 @@ t_char	*copy_enemy(t_data *data, t_char *enemy_tmp)
 		free_character(enemy);
 		return (NULL);
 	}
+	enemy->weapon = NULL;
 	weapon = get_item_by_pos(enemy->inventory->item, get_item_pos_by_name(enemy->inventory->item, enemy_tmp->weapon->name));
 	equip_weapon_from_inv(enemy, enemy->inventory, weapon->id);
 	enemy->prev = NULL;
