@@ -22,7 +22,8 @@ void	player_turn(t_char *main, t_char *enemy)
 
 	if (enemy->dead || main->dead)
 		return ;
-	printf("DEBUG: P %i E %i\n", main->speed, enemy->speed);
+	if (DEBUG)
+		printf("DEBUG: P %i E %i\n", main->speed, enemy->speed);
 	printf("%s\nhp: %i/%i\n\n%s\nhp: %i/%i\n\n", enemy->name, enemy->hp, enemy->hp_max, main->name, main->hp, main->hp_max);
 	printf("Options:\n1. Attack\n2. Inventory\n");
 	option = -1;
@@ -39,7 +40,7 @@ void	player_turn(t_char *main, t_char *enemy)
 		clear_console();
 	if (option == 1)
 		attack(main, enemy);
-	if (option == 2)
+	else if (option == 2)
 		display_inventory(main, main->inventory);
 
 }
@@ -82,6 +83,7 @@ int	battle(t_char *main, t_char *enemy)
 		}
 		if (enemy->dead)
 		{
+			character_add_xp(main, enemy->xp_on_death, 1);
 			get_input_int("press enter to continue..");
 		}
 	}

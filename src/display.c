@@ -12,12 +12,13 @@ void	display_location(t_data *data)
 	option = -1;
 	while (option <= 0 || option > i)
 	{
-		//clear_console();
+		if (!DEBUG)
+			clear_console();
 		printf("location: %s | x: %i y: %i\n\n%s\n\noptions:\n", location->name, location->x, location->y, location->description);
 		i = 0;
 		while (location->options[i])
 		{
-			printf("%i: %s\n", i + 1, location->options[i]);
+			printf("%i: %s\n", i + 1, location->options[i]->text);
 			i++;
 		}
 		option = get_input_int("");
@@ -37,7 +38,8 @@ void	display_item(t_char *c, t_item *item)
 	while (option == -1)
 	{
 		j = -1;
-		clear_console();
+		if (!DEBUG)
+			clear_console();
 		printf("name: %s\n", item->name);
 		printf("-------------------\n");
 		printf("type: %s\n", item->type);
@@ -196,13 +198,69 @@ void display_inventory(t_char *c, t_inventory *inv)
         else if (!strcmp(options[option], "back"))
             break;
     }
-	clear_console();
+	if (!DEBUG)
+		clear_console();
 }
 
 void	display_character(t_char *c) 
 {
-	clear_console();
-	printf("name: %s\n\nhp: %i/%i\n\nweapon: %s\nweapon damage: %i\n\ninventory: %i/%i\n", c->name, c->hp, c->hp_max, c->weapon->name, c->weapon->stat, c->inventory->size, c->inventory->maxSize);
-	get_input_int("press enter to go back.\n");
-	clear_console();
+	int		option;
+	int		option2;
+	char	*skills[8] = {"intelligence", "strength", "perception", "charisma", "stealth", "speed", "cancel", NULL};
+
+	if (!DEBUG)
+		clear_console();	
+	printf("name: %s\n\nhp: %i/%i\n\n", c->name, c->hp, c->hp_max);
+	printf("xp: %lu/%lu\n", c->xp, c->xp_to_next_lvl);
+	if (c->skill_points)
+		printf("unassigned skill points: %i\n", c->skill_points);
+	printf("\n");
+	printf("Intelligence: %i\nStrenght:     %i\nPerception:   %i\nCharisma:     %i\nStealth:      %i\nSpeed:        %i\n\n", c->intelligence, c->strength, c->perception, c->charisma, c->stealth, c->speed);
+	printf("weapon: %s\nweapon damage: %i\n\ninventory: %i/%i\n", c->weapon->name, item_stat(c, c->weapon), c->inventory->size, c->inventory->maxSize);
+	if (c->skill_points)
+	{
+		option = get_input_int("1. level up\n2. back\n");
+		if (option == 1)
+		{
+			option = -1;
+			option2 = -1;
+			while (option < 0 && option2 < 0)
+			{
+				if (!DEBUG)
+					clear_console();
+				int	len = char_arr_len(skills);
+				printf("skill points: %i\n", c->skill_points);
+				for (int i = 0; i < len; i++)
+					printf("%i. %s\n", i + 1, skills[i]);
+				option = get_input_int("");
+				if (option < 1 || option > len)
+				{
+					option = -1;
+					option2 = -1;
+					printf("wrong input\n");
+					continue ;
+				}
+				option--;
+				if (!strcmp(skills[option], "cancel"))
+					break ;
+				option2 = get_input_int("How many skill points?\n");
+				if (option2 < 0 || option2 > c->skill_points)
+				{
+					option = -1;
+					option2 = -1;
+					printf("wrong input\n");
+					continue ;
+				}
+				if (!character_increment_stat(c, skills[option], option2))
+					printf("stat doesn't exist, learn how to type\n");
+				else 
+					c->skill_points -= option2;
+			}
+			display_character(c);
+		}
+	}
+	else
+		option = get_input_int("press enter to go back.\n");
+	if (!DEBUG)
+		clear_console();
 }

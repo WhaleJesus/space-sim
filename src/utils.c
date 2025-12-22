@@ -32,34 +32,46 @@ int	char_arr_len(char **arr)
 	return (i);
 }
 
-char	**add_option(char **arr, char *option)
+int	option_arr_len(t_option **arr)
 {
-	char	**new_arr;
-	int		arr_len = char_arr_len(arr);
-	int		i = 0;
+	int	i = 0;
+
+	if (arr)
+	{
+		while (arr[i])
+			i++;
+	}
+	return (i);
+}
+
+t_option	**add_option(t_option **arr, char *text, int skill_check, int req, t_stat_type type, unsigned long xp)
+{
+	t_option	**new_arr;
+	int			arr_len = option_arr_len(arr);
+	int			i = 0;
 
 	if (!arr)
 		return (NULL);
-	new_arr = (char **)malloc(sizeof(char *) * (arr_len + 2));
+	new_arr = malloc(sizeof(t_option *) * (arr_len + 2));
 	if (!new_arr)
 		return (NULL);
 	while (arr[i])
 	{
-		if (strcmp(arr[i], "exit"))
-			new_arr[i] = ft_strdup(arr[i]);
+		if (strcmp(arr[i]->text, "exit"))
+			new_arr[i] = copy_option(arr[i]);
 		else 
-			new_arr[i] = ft_strdup(option);
+			new_arr[i] = init_option(text, skill_check, req, type, xp);
 		if (!new_arr[i])
 		{
-			free_char_array(new_arr);
+			free_option_array(new_arr);
 			return (NULL);
 		}
 		i++;
 	}
-	new_arr[i] = ft_strdup("exit");
+	new_arr[i] = init_option("exit", 0, 0, STAT_NONE, 0);
 	if (!new_arr[i])
 	{
-		free_char_array(new_arr);
+		free_option_array(new_arr);
 		return (NULL);
 	}
 	i++;

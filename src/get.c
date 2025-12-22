@@ -19,6 +19,18 @@ t_inventory	*copy_inventory(t_data *data, t_inventory *src)
 	return (inv);
 }
 
+t_option	*copy_option(t_option *src)
+{
+	t_option	*option;
+
+	option = init_option(src->text, src->skill_check, src->req, src->stat, src->xp);
+	if (!option)
+		return (NULL);
+	option->next = src->next;
+	option->fail = src->fail;
+	return (option);
+}
+
 t_char	*copy_enemy(t_data *data, t_char *enemy_tmp)
 {
 	t_char	*enemy = malloc(sizeof(t_char));
@@ -36,6 +48,10 @@ t_char	*copy_enemy(t_data *data, t_char *enemy_tmp)
 	enemy->name[strlen(enemy->name)] = '\0';
 	enemy->hp = enemy_tmp->hp;
 	enemy->hp_max = enemy_tmp->hp_max;
+	enemy->xp = enemy_tmp->xp;
+	enemy->xp_to_next_lvl = enemy_tmp->xp_to_next_lvl;
+	enemy->xp_on_death = enemy_tmp->xp_on_death;
+	enemy->skill_points = enemy_tmp->skill_points;
 	enemy->intelligence = enemy_tmp->intelligence;
 	enemy->strength = enemy_tmp->strength;
 	enemy->perception = enemy_tmp->perception;
@@ -74,6 +90,23 @@ t_char	*get_enemy(t_data *data, t_char *enemies, char *name)
 		head = head->next;
 	}
 	return (ret);
+}
+
+int get_char_stat(t_char *c, t_stat_type stat)
+{
+    if (stat == STAT_INTELLIGENCE)
+        return (c->intelligence);
+    if (stat == STAT_STRENGTH)
+        return (c->strength);
+    if (stat == STAT_PERCEPTION)
+        return (c->perception);
+    if (stat == STAT_CHARISMA)
+        return (c->charisma);
+    if (stat == STAT_STEALTH)
+        return (c->stealth);
+    if (stat == STAT_SPEED)
+        return (c->speed);
+    return (0);
 }
 
 t_item	*get_item_by_pos(t_item *src, int pos)

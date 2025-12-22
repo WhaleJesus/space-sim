@@ -9,16 +9,16 @@ t_location	*init_location_base(char *name, char *description, int x, int y)
 		return (NULL);
 	location->name = ft_strdup(name);
 	location->description = ft_strdup(description);
-	location->options = (char **)malloc(sizeof(char *) * 5);
+	location->options = malloc(sizeof(t_option *) * 5);
 	if (!location->options)
 	{
 		free_location(location);
 		return (NULL);
 	}
-	location->options[0] = ft_strdup("move");
-	location->options[1] = ft_strdup("character");
-	location->options[2] = ft_strdup("inventory");
-	location->options[3] = ft_strdup("exit");
+	location->options[0] = init_option("move", 0, 0, STAT_NONE, 0);
+	location->options[1] = init_option("character", 0, 0, STAT_NONE, 0);
+	location->options[2] = init_option("inventory", 0, 0, STAT_NONE, 0);
+	location->options[3] = init_option("exit", 0, 0, STAT_NONE, 0);
 	location->options[4] = NULL;
 	location->enemies = NULL;
 	location->characters = NULL;
@@ -35,18 +35,18 @@ t_location	*init_location_base(char *name, char *description, int x, int y)
 t_location	*init_location_plains(int x, int y)
 {
 	t_location	*location;
-	char		**options;
+	t_option	**options;
 
 	location = init_location_base("plains", "lots of grass", x, y);
 	if (!location)
 		return (NULL);
-	options = add_option(location->options, "battle");
+	options = add_option(location->options, "battle", 0, 0, STAT_NONE, 0);
 	if (!options)
 	{
 		free_location(location);
 		return (NULL);
 	}
-	free_char_array(location->options);
+	free_option_array(location->options);
 	location->options = options;
 	location->enemies = (char **)malloc(sizeof(char *) * 2);
 	if (!location->enemies)

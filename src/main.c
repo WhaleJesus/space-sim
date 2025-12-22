@@ -18,6 +18,7 @@ int	init_char_main(t_data *data)
 			name = temp;
 	}
 	char_main = init_char(data, name, 100, "knife");
+	char_main->speed = 10;
 	free(name);
 	if (!char_main)
 		return (0);

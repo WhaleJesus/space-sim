@@ -24,6 +24,41 @@ int	character_take_damage(t_char *c, int amount)
 	return (1);
 }
 
+void	character_add_xp(t_char *c, unsigned long xp, int display)
+{
+	int	lvlup;
+	unsigned long	add;
+	
+	if (display)
+		printf("%s gained %lu xp.\n", c->name, xp);
+	lvlup = 0;
+	while (c->xp + xp >= c->xp_to_next_lvl)
+	{
+		add = xp;
+		if (c->xp + xp > c->xp_to_next_lvl)
+		{
+			add = c->xp_to_next_lvl - c->xp;
+		}
+		xp -= add;
+		c->xp += add;
+		if (c->xp >= c->xp_to_next_lvl)
+		{
+			c->xp = 0;
+			c->xp_to_next_lvl += 25;
+			c->skill_points += 1;
+			lvlup++;
+		}
+	}
+	c->xp += xp;
+	if (display)
+	{
+		if (lvlup > 1)
+			printf("%s gained %i skill points!\n", c->name, lvlup);
+		else if (lvlup)
+			printf("%s has gained a skill point!\n", c->name);
+	}
+}
+
 int	character_increment_stat(t_char *c, char *stat, int add)
 {
 	if (!strcmp(stat, "intelligence"))

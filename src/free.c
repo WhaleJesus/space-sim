@@ -13,6 +13,24 @@ void	free_item(t_item *item)
 	free(item);
 }
 
+void	free_option(t_option *option)
+{
+	if (!option)
+		return ;
+	if (option->text)
+		free(option->text);
+	free(option);
+}
+
+void	free_dialogue(t_dialogue *d)
+{
+	if (!d)
+		return ;
+	if (d->text)
+		free(d->text);
+	free(d);
+}
+
 void	free_inventory(t_inventory *inv)
 {
 	t_item	*tmp;
@@ -55,6 +73,21 @@ void	free_char_array(char **arr)
 	}
 }
 
+void	free_option_array(t_option **arr)
+{
+	int	i = 0;
+
+	if (arr)
+	{
+		while (arr[i])
+		{
+			free_option(arr[i]);
+			i++;
+		}
+		free(arr);
+	}
+}
+
 void	free_location(t_location *location)
 {
 	if (!location)
@@ -63,7 +96,7 @@ void	free_location(t_location *location)
 		free(location->name);
 	if (location->description)
 		free(location->description);
-	free_char_array(location->options);
+	free_option_array(location->options);
 	free_char_array(location->enemies);
 	free(location);
 }

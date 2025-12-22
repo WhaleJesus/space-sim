@@ -13,11 +13,27 @@
 
 #define DEBUG 1
 
+typedef enum e_stat_type
+{
+    STAT_NONE,
+    STAT_INTELLIGENCE,
+    STAT_STRENGTH,
+    STAT_PERCEPTION,
+    STAT_CHARISMA,
+    STAT_STEALTH,
+    STAT_SPEED
+}   t_stat_type;
+
 typedef struct	s_char
 {
+	int					id;
 	char				*name;
 	int					hp;
 	int					hp_max;
+	unsigned long		xp;
+	unsigned long		xp_to_next_lvl;
+	unsigned long		xp_on_death;
+	int					skill_points;
 	int					intelligence;
 	int					strength;
 	int					perception;
@@ -27,6 +43,7 @@ typedef struct	s_char
 	int					dead;
 	struct s_item		*weapon;
 	struct s_inventory	*inventory;
+	struct s_dialogue	*dialogue;
 	struct s_char		*prev;
 	struct s_char		*next;
 }	t_char;
@@ -39,7 +56,7 @@ typedef struct	s_item
 	char			*type;
 	int				stat;
 	double			stat_mult;
-	char			*c_stat;
+	t_stat_type 	c_stat;
 	int				equipped;
 	int				can_drop;
 	struct s_item	*next;
@@ -57,7 +74,7 @@ typedef struct	s_location
 {
 	char				*name;
 	char				*description;
-	char				**options;
+	struct s_option		**options;
 	char				**enemies;
 	char				**characters;
 	int					x;
@@ -65,6 +82,27 @@ typedef struct	s_location
 	struct s_location	*next;
 	struct s_location	*prev;
 }	t_location;
+
+typedef struct s_option
+{
+	char				*text;
+	int					skill_check;
+	int					req;
+	t_stat_type			stat;
+	unsigned long		xp;
+	struct s_dialogue	*next;
+	struct s_dialogue	*fail;
+}	t_option;
+
+typedef struct s_dialogue
+{
+	unsigned long		id;
+	char				*text;
+	t_option			**options;
+	struct s_dialogue	*next;
+	struct s_dialogue	*prev;
+}	t_dialogue;
+
 
 typedef struct	s_data
 {
@@ -76,6 +114,8 @@ typedef struct	s_data
 	int						map_height;
 	int						inventory_base_size;
 	unsigned long			item_id;
+	unsigned long			dialogue_id;
+	unsigned long			npc_id;
 	struct s_location		*current_location;
 	int						exit;
 }	t_data;
@@ -83,9 +123,11 @@ typedef struct	s_data
 // init
 void		init_data(t_data *data);
 t_inventory	*init_inventory(int maxSize);
-t_item		*init_item(t_data *data, char *name, char *description, char *type, int stat, char *c_stat, double stat_mult, int can_drop);
+t_item		*init_item(t_data *data, char *name, char *description, char *type, int stat, t_stat_type c_stat, double stat_mult, int can_drop);
 t_char		*init_char(t_data *data, char *name, int hp, char *weapon);
 void		init_character_stats(t_char *c, int intelligence, int strength, int perception, int charisma, int stealth, int speed);
+t_dialogue	*init_dialogue(t_data *data, char *text);
+t_option	*init_option(char *text, int skill_check, int req, t_stat_type stat, unsigned long xp);
 
 // init location
 t_location	*init_location_plains(int x, int y);
@@ -95,8 +137,10 @@ t_char		*init_goblin(t_data *data);
 
 // get
 t_inventory	*copy_inventory(t_data *data, t_inventory *src);
+t_option	*copy_option(t_option *src);
 t_char		*copy_enemy(t_data *data, t_char *enemy_tmp);
 t_char		*get_enemy(t_data *data, t_char *enemies, char *name);
+int 		get_char_stat(t_char *c, t_stat_type stat);
 t_item		*get_item_by_name(t_data *data, t_item *src, char *name);
 t_item		*get_item_by_pos(t_item *src, int pos);
 int			get_item_pos_by_name(t_item *src, char *name);
@@ -108,23 +152,24 @@ char		*get_input(char *msg);
 int			get_input_int(char *msg);
 
 // free
-void		free_data(t_data *data);
-void		free_character(t_char *character);
 void		free_item(t_item *item);
+void		free_option(t_option *option);
+void		free_dialogue(t_dialogue *d);
 void		free_inventory(t_inventory *inv);
+void		free_character(t_char *character);
 void		free_char_array(char **arr);
+void		free_option_array(t_option **arr);
 void		free_location(t_location *location);
 void		free_map(t_data *data);
-void		free_location(t_location *location);
+void		free_data(t_data *data);
 
 // read
-void		read_location(t_location *location, FILE *fd);
 
 // utils
 char		*ft_substr(char* arr, int start, int len);
 char 		*ft_strdup(char *s);
 int			char_arr_len(char **arr);
-char		**add_option(char **arr, char *option);
+t_option	**add_option(t_option **arr, char *text, int skill_check, int req, t_stat_type type, unsigned long xp);
 int 		rand_range(int min, int max);
 char 		*format_width(const char *src, size_t size);
 char		*strjoin(char *s1, char *s2);
@@ -149,6 +194,7 @@ void		character_heal(t_char *c, int amount);
 int			character_take_damage(t_char *c, int amount);
 int			character_increment_stat(t_char *c, char *stat, int add);
 int			character_change_stat(t_char *c, char *stat, int add);
+void		character_add_xp(t_char *c, unsigned long xp, int display);
 
 // display
 void		display_location(t_data *data);

@@ -69,16 +69,16 @@ void	handle_location_move(t_data *data, t_location *location)
 
 void	handle_location_option(t_data *data, t_location *location, int i)
 {
-	char	*option = location->options[i];
-	int		r;
+	t_option	*option = location->options[i];
+	int			r;
 
-	if (!strcmp(option, "move"))
+	if (!strcmp(option->text, "move"))
 		handle_location_move(data, location);
-	if (!strcmp(option, "character"))
+	if (!strcmp(option->text, "character"))
 		display_character(data->char_main);
-	if (!strcmp(option, "inventory"))
+	if (!strcmp(option->text, "inventory"))
 		display_inventory(data->char_main, data->char_main->inventory);
-	if (!strcmp(option, "battle"))
+	if (!strcmp(option->text, "battle"))
 	{
 		r = rand_range(0, char_arr_len(location->enemies) - 1);
 		printf("debug: r: %i len: %i\n", r, char_arr_len(location->enemies));
@@ -89,6 +89,6 @@ void	handle_location_option(t_data *data, t_location *location, int i)
 			data->exit = 1;
 		}
 	}
-	if (!strcmp(option, "exit"))
+	if (!strcmp(option->text, "exit"))
 		data->exit = 1;
 }
