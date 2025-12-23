@@ -20,34 +20,22 @@ char* ft_substr(char* arr, int start, int len)
 	return(str);
 }
 
-int	char_arr_len(char **arr)
+int	ptr_arr_len(void **arr)
 {
-	int	i = 0;
+	int	i;
 
-	if (arr)
-	{
-		while (arr[i])
-			i++;
-	}
-	return (i);
-}
-
-int	option_arr_len(t_option **arr)
-{
-	int	i = 0;
-
-	if (arr)
-	{
-		while (arr[i])
-			i++;
-	}
+	i = 0;
+	if (!arr)
+		return (0);
+	while (arr[i])
+		i++;
 	return (i);
 }
 
 t_option	**add_option(t_option **arr, char *text, int skill_check, int req, t_stat_type type, unsigned long xp)
 {
 	t_option	**new_arr;
-	int			arr_len = option_arr_len(arr);
+	int			arr_len = ptr_arr_len((void **)arr);
 	int			i = 0;
 
 	if (!arr)

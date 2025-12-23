@@ -96,3 +96,30 @@ int	character_change_stat(t_char *c, char *stat, int add)
 		return (0);
 	return (1);
 }
+
+int	character_trade_item(t_char *dst, t_char *src, t_item *item)
+{
+	if (!dst || !src || !item)
+	{
+		if (DEBUG)
+			printf("DEBUG: character_trade_item returning at start\n");
+		return (0);
+	}
+	if (item->value < 0)
+	{
+		printf("Can't trade this item\n");
+		return (1);
+	}
+	if (dst->gold < item->value)
+	{
+		printf("%s does not have enough gold\n", dst->name);
+		get_input_int("");
+		return (1);
+	}
+	dst->gold -= item->value;
+	src->gold += item->value;
+	printf("DEBUG: item id: %lu\n", item->id);
+	print_inventory(src->inventory);
+	inventory_transfer_item(dst->inventory, src->inventory, item->id);
+	return (1);
+}

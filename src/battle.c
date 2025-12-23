@@ -16,7 +16,7 @@ void	enemy_turn(t_char *main, t_char *enemy)
 	attack(enemy, main);
 }
 
-void	player_turn(t_char *main, t_char *enemy)
+void	player_turn(t_data *data, t_char *main, t_char *enemy)
 {
 	int		option;
 
@@ -41,11 +41,11 @@ void	player_turn(t_char *main, t_char *enemy)
 	if (option == 1)
 		attack(main, enemy);
 	else if (option == 2)
-		display_inventory(main, main->inventory);
+		display_inventory(data, main, main->inventory, 1, 0);
 
 }
 
-int	battle(t_char *main, t_char *enemy)
+int	battle(t_data *data, t_char *main, t_char *enemy)
 {
 	int		ret;
 
@@ -59,26 +59,26 @@ int	battle(t_char *main, t_char *enemy)
 	{
 		if (main->speed > enemy->speed)
 		{
-			player_turn(main, enemy);
+			player_turn(data, main, enemy);
 			enemy_turn(main, enemy);
 		}
 		else if (main->speed < enemy->speed)
 		{
 			enemy_turn(main, enemy);
-			player_turn(main, enemy);
+			player_turn(data, main, enemy);
 		}
 		else 
 		{
 			int	diceRoll = rand_range(0, 1);
 			if (diceRoll == 0)
 			{
-				player_turn(main, enemy);
+				player_turn(data, main, enemy);
 				enemy_turn(main, enemy);
 			}
 			else 
 			{
 				enemy_turn(main, enemy);
-				player_turn(main, enemy);
+				player_turn(data, main, enemy);
 			}
 		}
 		if (enemy->dead)

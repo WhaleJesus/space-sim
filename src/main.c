@@ -22,17 +22,7 @@ int	init_char_main(t_data *data)
 	free(name);
 	if (!char_main)
 		return (0);
-	inventory_add_item(char_main->inventory, get_item_by_name(data, data->inventory->item, "apple"));
-	/* debug
-	for (int i = 0; i < 23; i++)
-	{
-		int	j;
-		t_item	*tmp = get_item_by_name(data, data->inventory->item, "knife");
-		j = inventory_add_item(char_main->inventory, tmp);
-		if (!j)
-			free_item(tmp);
-	}
-	*/
+	inventory_add_item(char_main->inventory, get_item_by_name(data->inventory->item, "apple"));
 	data->char_main = char_main;
 	return (1);
 }
@@ -44,13 +34,13 @@ int	main(int ac, char **av)
 	t_data	data;
 
 	init_data(&data);
+	location_add_character(get_map_location(data.map, 1, 2), init_npc_basic(&data));
 	init_char_main(&data);
+	print_inventory(data.inventory);
 	print_inventory(data.char_main->inventory);
-	print_inventory(data.enemies->inventory);
 	srand(time(NULL));   // seed once
 	while (!data.exit)
 		display_location(&data);
-//	battle(data.char_main, get_enemy(data.enemies, "Goblin"));
 	free_data(&data);
 	return (0);
 }

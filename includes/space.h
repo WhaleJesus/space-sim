@@ -41,6 +41,7 @@ typedef struct	s_char
 	int					stealth;
 	int					speed;
 	int					dead;
+	int					gold;
 	struct s_item		*weapon;
 	struct s_inventory	*inventory;
 	struct s_dialogue	*dialogue;
@@ -54,6 +55,7 @@ typedef struct	s_item
 	char			*name;
 	char			*description;
 	char			*type;
+	int				value;
 	int				stat;
 	double			stat_mult;
 	t_stat_type 	c_stat;
@@ -76,7 +78,7 @@ typedef struct	s_location
 	char				*description;
 	struct s_option		**options;
 	char				**enemies;
-	char				**characters;
+	struct s_char		**characters;
 	int					x;
 	int					y;
 	struct s_location	*next;
@@ -103,8 +105,18 @@ typedef struct s_dialogue
 	struct s_dialogue	*prev;
 }	t_dialogue;
 
+typedef struct s_quest
+{
+	int			id;
+	int			stage;
+	int			stage_max;
+	char		*name;
+	char		*description;
+	t_dialogue	**dialogue;
+	t_inventory	*rewards;
+}	t_quest;
 
-typedef struct	s_data
+typedef struct s_data
 {
 	struct s_char 			*char_main;
 	struct s_char			*enemies;
@@ -123,7 +135,7 @@ typedef struct	s_data
 // init
 void		init_data(t_data *data);
 t_inventory	*init_inventory(int maxSize);
-t_item		*init_item(t_data *data, char *name, char *description, char *type, int stat, t_stat_type c_stat, double stat_mult, int can_drop);
+t_item		*init_item(unsigned long id, char *name, char *description, char *type, int value, int stat, t_stat_type c_stat, double stat_mult, int can_drop);
 t_char		*init_char(t_data *data, char *name, int hp, char *weapon);
 void		init_character_stats(t_char *c, int intelligence, int strength, int perception, int charisma, int stealth, int speed);
 t_dialogue	*init_dialogue(t_data *data, char *text);
@@ -135,15 +147,21 @@ t_location	*init_location_plains(int x, int y);
 // init enemy
 t_char		*init_goblin(t_data *data);
 
+// init npc
+t_char    	*init_npc_basic(t_data *data);
+
 // get
 t_inventory	*copy_inventory(t_data *data, t_inventory *src);
 t_option	*copy_option(t_option *src);
 t_char		*copy_enemy(t_data *data, t_char *enemy_tmp);
 t_char		*get_enemy(t_data *data, t_char *enemies, char *name);
+t_char		*get_char_by_pos(t_char *c, int pos);
+char		*get_stat_name(t_stat_type stat);
 int 		get_char_stat(t_char *c, t_stat_type stat);
-t_item		*get_item_by_name(t_data *data, t_item *src, char *name);
+t_item		*copy_item_by_id(t_item *src, unsigned long id);
 t_item		*get_item_by_pos(t_item *src, int pos);
 int			get_item_pos_by_name(t_item *src, char *name);
+t_item		*get_item_by_name(t_item *src, char *name);
 t_location	*get_map_location(t_location *map, int x, int y);
 
 // input
@@ -168,17 +186,18 @@ void		free_data(t_data *data);
 // utils
 char		*ft_substr(char* arr, int start, int len);
 char 		*ft_strdup(char *s);
-int			char_arr_len(char **arr);
+int			ptr_arr_len(void **arr);
 t_option	**add_option(t_option **arr, char *text, int skill_check, int req, t_stat_type type, unsigned long xp);
 int 		rand_range(int min, int max);
 char 		*format_width(const char *src, size_t size);
 char		*strjoin(char *s1, char *s2);
 
 // battle
-int			battle(t_char *main, t_char *enemy_tmp);
+int			battle(t_data *data, t_char *main, t_char *enemy);
 
 // location
-void		handle_location_option(t_data *data, t_location *location, int i);
+void		handle_location_option(t_data *data, t_location *location, t_option **options, int i);
+int			location_add_character(t_location *location, t_char *c);
 
 // item
 void		add_item(t_item *dst, t_item *item);
@@ -188,6 +207,8 @@ int			equip_weapon_from_inv(t_char *c, t_inventory *inv, unsigned long id);
 int			unequip_weapon(t_char *c);
 void		print_inventory(t_inventory *inv);
 int			item_stat(t_char *c, t_item *item);
+int			inventory_transfer_item(t_inventory *dst, t_inventory *src, unsigned long id);
+int			inventory_transfer_all(t_inventory *dst, t_inventory *src);
 
 // character
 void		character_heal(t_char *c, int amount);
@@ -195,10 +216,15 @@ int			character_take_damage(t_char *c, int amount);
 int			character_increment_stat(t_char *c, char *stat, int add);
 int			character_change_stat(t_char *c, char *stat, int add);
 void		character_add_xp(t_char *c, unsigned long xp, int display);
+int			character_trade_item(t_char *dst, t_char *src, t_item *item);
+
+// dialogue
+void    	display_dialogue(t_data *data, t_char *npc, t_dialogue *dialogue);
 
 // display
 void		display_location(t_data *data);
-void		display_inventory(t_char *c, t_inventory *inv);
+void		display_item(t_data *data, t_char *c, t_inventory *inv, t_item *item, int party, int trade);
+void		display_inventory(t_data *data, t_char *c, t_inventory *inv, int party, int trade);
 void		display_character(t_char *c);
 
 #endif

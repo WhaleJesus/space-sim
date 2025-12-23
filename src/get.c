@@ -12,7 +12,7 @@ t_inventory	*copy_inventory(t_data *data, t_inventory *src)
 	head = src->item;
 	while (head)
 	{
-		tmp = get_item_by_name(data, data->inventory->item, head->name);
+		tmp = get_item_by_name(data->inventory->item, head->name);
 		inventory_add_item(inv, tmp);
 		head = head->next;
 	}
@@ -92,6 +92,28 @@ t_char	*get_enemy(t_data *data, t_char *enemies, char *name)
 	return (ret);
 }
 
+t_char	*get_char_by_pos(t_char *c, int pos)
+{
+	int		i;
+	t_char	*head;
+
+	if (!c || pos < 1)
+		return (NULL);
+	head = c;
+	i = 0;
+	while (head->next && i++ < pos)
+		head = head->next;
+	if (i != pos)
+		return (NULL);
+	return (head);
+}
+
+char	*get_stat_name(t_stat_type stat)
+{
+	char	*stats[] = {"", "intelligence", "strength", "perception", "charisma", "stealth", "speed"};
+	return (stats[stat]);
+}
+
 int get_char_stat(t_char *c, t_stat_type stat)
 {
     if (stat == STAT_INTELLIGENCE)
@@ -107,6 +129,30 @@ int get_char_stat(t_char *c, t_stat_type stat)
     if (stat == STAT_SPEED)
         return (c->speed);
     return (0);
+}
+
+t_item	*copy_item_by_id(t_item *src, unsigned long id)
+{
+	t_item	*head;
+	t_item	*ret;
+
+	if (!src)
+	{
+		if (DEBUG)
+			printf("DEBUG: copy_item_by_id return at start\n");
+		return (NULL);
+	}
+	head = src;
+	while (head && head->id != id)
+		head = head->next;
+	if (!head)
+	{
+		if (DEBUG)
+			printf("DEBUG: copy_item_by_id !head\n");
+		return (NULL);
+	}
+	ret = init_item(head->id, head->name, head->description, head->type, head->value, head->stat, head->c_stat, head->stat_mult, head->can_drop);
+	return (ret);
 }
 
 t_item	*get_item_by_pos(t_item *src, int pos)
@@ -146,7 +192,7 @@ int	get_item_pos_by_name(t_item *src, char *name)
 	return (0);
 }
 
-t_item	*get_item_by_name(t_data *data, t_item *src, char *name)
+t_item	*get_item_by_name(t_item *src, char *name)
 {
 	t_item	*dst;
 	t_item	*head;
@@ -159,7 +205,7 @@ t_item	*get_item_by_name(t_data *data, t_item *src, char *name)
 	{
 		if (!strcmp(head->name, name))
 		{
-			dst = init_item(data, head->name, head->description, head->type, head->stat, head->c_stat, head->stat_mult, head->can_drop);
+			dst = init_item(head->id, head->name, head->description, head->type, head->value, head->stat, head->c_stat, head->stat_mult, head->can_drop);
 			break ;
 		}
 		head = head->next;

@@ -10,7 +10,7 @@ void	print_inventory(t_inventory *inv)
 	int	i = 1;
 	while (head)
 	{
-		printf("%i %s\n", i, head->name);
+		printf("%i name: %s id: %li\n", i, head->name, head->id);
 		i++;
 		head = head->next;
 	}
@@ -111,6 +111,8 @@ int	inventory_remove_item(t_inventory *inv, unsigned long id)
 		tmp = head;
 		head = head->next;
 	}
+	if (head == inv->item)
+		inv->item = head->next;
 	if (!head)
 		return (0);
 	if (!head->can_drop)
@@ -134,4 +136,44 @@ int	item_stat(t_char *c, t_item *item)
 	c_stat = get_char_stat(c, item->c_stat);
 	stat += c_stat * item->stat_mult;
 	return (stat);
+}
+
+int	inventory_transfer_item(t_inventory *dst, t_inventory *src, unsigned long id)
+{
+	t_item	*item;
+
+	if (!dst || !src)
+	{
+		if (DEBUG)
+			printf("DEBUG: inventory_transfer_item returning at start\n");
+		return (0);
+	}
+	item = copy_item_by_id(src->item, id);
+	if (!item)
+	{
+		if (DEBUG)
+			printf("DEBUG: inventory_transfer_item item not found\n");
+		return (0);
+	}	
+	inventory_remove_item(src, id);
+	inventory_add_item(dst, item);
+	return (1);
+}
+
+int	inventory_transfer_all(t_inventory *dst, t_inventory *src)
+{
+	t_item	*head;
+	t_item	*tmp;
+
+	if (!dst || !src)
+		return (0);
+	head = src->item;
+	while (head)
+	{
+		tmp = head;
+		head = head->next;
+		if (tmp->can_drop)
+			inventory_transfer_item(dst, src, tmp->id);
+	}
+	return (1);
 }

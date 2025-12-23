@@ -1,14 +1,9 @@
 #include "../includes/space.h"
 
-t_item	*init_item(t_data *data, char *name, char *description, char *type, int stat, t_stat_type c_stat, double stat_mult, int can_drop)
+t_item	*init_item(unsigned long id, char *name, char *description, char *type, int value, int stat, t_stat_type c_stat, double stat_mult, int can_drop)
 {
 	t_item			*item;
-	unsigned long	id;
 
-	if (!data)
-		id = -1;
-	else 
-		id = data->item_id++;
 	item = malloc(sizeof(t_item) + 1);
 	if (!item)
 		return (NULL);
@@ -16,6 +11,7 @@ t_item	*init_item(t_data *data, char *name, char *description, char *type, int s
 	item->name = ft_strdup(name);
 	item->description = ft_strdup(description);
 	item->type = ft_strdup(type);
+	item->value = value;
 	item->stat = stat;
 	item->stat_mult = stat_mult;
 	item->c_stat = c_stat;
@@ -71,6 +67,7 @@ t_char	*init_char(t_data *data, char *name, int hp, char *weapon)
 	character->stealth = 1;
 	character->speed = 1;
 	character->dead = 0;
+	character->gold = 0;
 	character->weapon = NULL;
 	character->inventory = init_inventory(data->inventory_base_size);
 	if (!character->inventory)
@@ -78,13 +75,13 @@ t_char	*init_char(t_data *data, char *name, int hp, char *weapon)
 		free_character(character);
 		return (NULL);
 	}
-	fist = get_item_by_name(data, data->inventory->item, "fist");
+	fist = get_item_by_name(data->inventory->item, "fist");
 	inventory_add_item(character->inventory, fist);
 	character->weapon = fist;
 	fist->equipped = 1;
 	if (weapon)
 	{
-		fist = get_item_by_name(data, data->inventory->item, weapon);
+		fist = get_item_by_name(data->inventory->item, weapon);
 		inventory_add_item(character->inventory, fist);
 		equip_weapon_from_inv(character, character->inventory, fist->id);
 	}
@@ -145,7 +142,7 @@ t_option	*init_option(char *text, int skill_check, int req, t_stat_type stat, un
 	option = malloc(sizeof(t_option));
 	if (!option)
 		return (NULL);
-	option->text = malloc(sizeof(char) * strlen(text));
+	option->text = malloc(sizeof(char) * (strlen(text) + 1));
 	if (!option->text)
 	{
 		free_option(option);
@@ -156,6 +153,8 @@ t_option	*init_option(char *text, int skill_check, int req, t_stat_type stat, un
 	option->req = req;
 	option->stat = stat;
 	option->xp = xp;
+	option->next = NULL;
+	option->fail = NULL;
 	return (option);
 }
 
@@ -217,11 +216,11 @@ void	init_data_items(t_data *data)
 		data->exit = 1;
 		return ;
 	}
-	item = init_item(NULL, "knife", "a small rusty blade", "weapon", 3, STAT_SPEED, 0.5, 1);
+	item = init_item(data->item_id++, "knife", "a small rusty blade", "weapon", 3, 3, STAT_SPEED, 0.5, 1);
 	inventory_add_item(data->inventory, item);
-	item = init_item(NULL, "fist", "just your bare hands", "weapon", 1, STAT_STRENGTH, 0.5, 0);
+	item = init_item(data->item_id++, "fist", "just your bare hands", "weapon", -1, 1, STAT_STRENGTH, 0.5, 0);
 	inventory_add_item(data->inventory, item);
-	item = init_item(NULL, "apple", "should keep the doctor away", "food", 5, STAT_NONE, 0.0, 1);
+	item = init_item(data->item_id++, "apple", "should keep the doctor away", "food", 2, 5, STAT_NONE, 0.0, 1);
 	inventory_add_item(data->inventory, item);
 }
 
@@ -233,7 +232,7 @@ void	init_data(t_data *data)
 	data->map_width = 2;
 	data->map_height = 3;
 	data->inventory_base_size = 50;
-	data->item_id = -1;
+	data->item_id = 0;
 	data->dialogue_id = -1;
 	data->npc_id = -1;
 	data->exit = 0;
