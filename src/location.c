@@ -74,11 +74,11 @@ void	handle_location_option(t_data *data, t_location *location, t_option **optio
 
 	if (!strcmp(option->text, "move"))
 		handle_location_move(data, location);
-	if (!strcmp(option->text, "character"))
+	else if (!strcmp(option->text, "character"))
 		display_character(data->char_main);
-	if (!strcmp(option->text, "inventory"))
+	else if (!strcmp(option->text, "inventory"))
 		display_inventory(data, data->char_main, data->char_main->inventory, 1, 0);
-	if (!strcmp(option->text, "battle"))
+	else if (!strcmp(option->text, "battle"))
 	{
 		r = rand_range(0, ptr_arr_len((void **)location->enemies) - 1);
 		printf("debug: r: %i len: %i\n", r, ptr_arr_len((void **)location->enemies));
@@ -89,7 +89,7 @@ void	handle_location_option(t_data *data, t_location *location, t_option **optio
 			data->exit = 1;
 		}
 	}
-	if (!strcmp(option->text, "talk"))
+	else if (!strcmp(option->text, "talk"))
 	{
 		int		i = 0;
 		int		len;
@@ -114,6 +114,8 @@ void	handle_location_option(t_data *data, t_location *location, t_option **optio
 			}
 		}
 	}
+	else if (!strcmp(option->text, "gather resources"))
+		location_gather_resources(data, data->char_main, location);
 	if (!strcmp(option->text, "exit"))
 		data->exit = 1;
 }
@@ -145,4 +147,30 @@ int	location_add_character(t_location *location, t_char *c)
 	free(location->characters);
 	location->characters = characters;
 	return (1);
+}
+
+int	location_gather_resources(t_data *data, t_char *c, t_location *location)
+{
+	int		rand;
+	int		times;
+	t_item	*item;
+
+	// time_forward() TODO
+	if (!data || !c || !location)
+		return (0);
+	times = rand_range(1, 5);
+	for (int i = 0; i < times; i++)
+	{
+		rand = rand_range(1, location->resources->size);
+		item = copy_item_by_pos(location->resources->item, rand);
+		if (item)
+			inventory_add_item(c->inventory, item, 1);
+	}
+	get_input_int("press enter to continue");
+	return (1);
+}
+
+int	location_build(t_data *data, t_location *location)
+{
+	
 }

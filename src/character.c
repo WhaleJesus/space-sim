@@ -120,6 +120,6 @@ int	character_trade_item(t_char *dst, t_char *src, t_item *item)
 	src->gold += item->value;
 	printf("DEBUG: item id: %lu\n", item->id);
 	print_inventory(src->inventory);
-	inventory_transfer_item(dst->inventory, src->inventory, item->id);
+	inventory_transfer_item(dst->inventory, src->inventory, item->id, 0);
 	return (1);
 }

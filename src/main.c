@@ -22,7 +22,7 @@ int	init_char_main(t_data *data)
 	free(name);
 	if (!char_main)
 		return (0);
-	inventory_add_item(char_main->inventory, get_item_by_name(data->inventory->item, "apple"));
+	inventory_add_item(char_main->inventory, get_item_by_name(data->inventory->item, "apple"), 0);
 	data->char_main = char_main;
 	return (1);
 }

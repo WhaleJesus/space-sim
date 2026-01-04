@@ -122,6 +122,7 @@ void	free_location(t_location *location)
 	free_option_array(location->options);
 	free_char_array(location->enemies);
 	free_character_array(location->characters);
+	free_inventory(location->resources);
 	free(location);
 }
 

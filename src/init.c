@@ -76,13 +76,13 @@ t_char	*init_char(t_data *data, char *name, int hp, char *weapon)
 		return (NULL);
 	}
 	fist = get_item_by_name(data->inventory->item, "fist");
-	inventory_add_item(character->inventory, fist);
+	inventory_add_item(character->inventory, fist, 0);
 	character->weapon = fist;
 	fist->equipped = 1;
 	if (weapon)
 	{
 		fist = get_item_by_name(data->inventory->item, weapon);
-		inventory_add_item(character->inventory, fist);
+		inventory_add_item(character->inventory, fist, 0);
 		equip_weapon_from_inv(character, character->inventory, fist->id);
 	}
 	character->dialogue = NULL;
@@ -183,7 +183,7 @@ void	init_data_locations(t_data *data)
 		x = 0;
 		while (x < data->map_width)
 		{
-			location = init_location_plains(x, y);
+			location = init_location_plains(data, x, y);
 			if (!location)
 			{
 				free_map(data);
@@ -217,17 +217,20 @@ void	init_data_items(t_data *data)
 		return ;
 	}
 	item = init_item(data->item_id++, "knife", "a small rusty blade", "weapon", 3, 3, STAT_SPEED, 0.5, 1);
-	inventory_add_item(data->inventory, item);
+	inventory_add_item(data->inventory, item, 0);
 	item = init_item(data->item_id++, "fist", "just your bare hands", "weapon", -1, 1, STAT_STRENGTH, 0.5, 0);
-	inventory_add_item(data->inventory, item);
+	inventory_add_item(data->inventory, item, 0);
 	item = init_item(data->item_id++, "apple", "should keep the doctor away", "food", 2, 5, STAT_NONE, 0.0, 1);
-	inventory_add_item(data->inventory, item);
+	inventory_add_item(data->inventory, item, 0);
+	item = init_item(data->item_id++, "wood", "some sturdy wood", "material", 1, 0, STAT_NONE, 0, 1);
+	inventory_add_item(data->inventory, item, 0);
 }
 
 void	init_data(t_data *data)
 {
 	data->char_main = NULL;
 	data->enemies = NULL;
+	data->npc = NULL;
 	data->map = NULL;
 	data->map_width = 2;
 	data->map_height = 3;

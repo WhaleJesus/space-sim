@@ -79,7 +79,7 @@ void	add_item(t_item *dst, t_item *item)
 	}
 }
 
-int	inventory_add_item(t_inventory *inv, t_item *item)
+int	inventory_add_item(t_inventory *inv, t_item *item, int display)
 {
 	if (!inv || !item)
 		return (-1);
@@ -95,6 +95,8 @@ int	inventory_add_item(t_inventory *inv, t_item *item)
 		add_item(inv->item, item);
 	}
 	inv->size++;
+	if (display)
+		printf("Got %s\n", item->name);
 	return (1);
 }
 
@@ -138,7 +140,7 @@ int	item_stat(t_char *c, t_item *item)
 	return (stat);
 }
 
-int	inventory_transfer_item(t_inventory *dst, t_inventory *src, unsigned long id)
+int	inventory_transfer_item(t_inventory *dst, t_inventory *src, unsigned long id, int display)
 {
 	t_item	*item;
 
@@ -156,11 +158,11 @@ int	inventory_transfer_item(t_inventory *dst, t_inventory *src, unsigned long id
 		return (0);
 	}	
 	inventory_remove_item(src, id);
-	inventory_add_item(dst, item);
+	inventory_add_item(dst, item, display);
 	return (1);
 }
 
-int	inventory_transfer_all(t_inventory *dst, t_inventory *src)
+int	inventory_transfer_all(t_inventory *dst, t_inventory *src, int display)
 {
 	t_item	*head;
 	t_item	*tmp;
@@ -173,7 +175,7 @@ int	inventory_transfer_all(t_inventory *dst, t_inventory *src)
 		tmp = head;
 		head = head->next;
 		if (tmp->can_drop)
-			inventory_transfer_item(dst, src, tmp->id);
+			inventory_transfer_item(dst, src, tmp->id, display);
 	}
 	return (1);
 }

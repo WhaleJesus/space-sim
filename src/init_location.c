@@ -1,6 +1,6 @@
 #include "../includes/space.h"
 
-t_location	*init_location_base(char *name, char *description, int x, int y)
+t_location	*init_location_base(t_data *data, char *name, char *description, int x, int y)
 {
 	t_location	*location;
 
@@ -22,6 +22,9 @@ t_location	*init_location_base(char *name, char *description, int x, int y)
 	location->options[4] = NULL;
 	location->enemies = NULL;
 	location->characters = NULL;
+	location->buildings = NULL;
+	location->resources = init_inventory(data->inventory_base_size);
+	location->can_build = 0;
 	location->x = x;
 	location->y = y;
 	if (!location->name || !location->description || !location->options[0] || !location->options[1])
@@ -32,29 +35,29 @@ t_location	*init_location_base(char *name, char *description, int x, int y)
 	return (location);
 }
 
-t_location	*init_location_plains(int x, int y)
+t_location	*init_location_plains(t_data *data, int x, int y)
 {
 	t_location	*location;
-	t_option	**options;
 
-	location = init_location_base("plains", "lots of grass", x, y);
+	location = init_location_base(data, "plains", "lots of grass", x, y);
 	if (!location)
 		return (NULL);
-	options = add_option(location->options, "battle", 0, 0, STAT_NONE, 0);
-	if (!options)
+	location->options = add_option(location->options, "gather resources", 0, 0, STAT_NONE, 0);
+	location->options = add_option(location->options, "battle", 0, 0, STAT_NONE, 0);
+	if (!location->options)
 	{
 		free_location(location);
 		return (NULL);
 	}
-	free_option_array(location->options);
-	location->options = options;
+	inventory_add_item(location->resources, get_item_by_name(data->inventory->item, "wood"), 0);
 	location->enemies = (char **)malloc(sizeof(char *) * 2);
 	if (!location->enemies)
 	{
 		free_location(location);
 		return (NULL);
 	}
-	location->enemies[0] = ft_strdup("goblin");;
+	location->enemies[0] = ft_strdup("goblin");
 	location->enemies[1] = NULL;
+	location->can_build = 1;
 	return (location);
 }

@@ -13,7 +13,7 @@ t_inventory	*copy_inventory(t_data *data, t_inventory *src)
 	while (head)
 	{
 		tmp = get_item_by_name(data->inventory->item, head->name);
-		inventory_add_item(inv, tmp);
+		inventory_add_item(inv, tmp, 0);
 		head = head->next;
 	}
 	return (inv);
@@ -151,6 +151,26 @@ t_item	*copy_item_by_id(t_item *src, unsigned long id)
 			printf("DEBUG: copy_item_by_id !head\n");
 		return (NULL);
 	}
+	ret = init_item(head->id, head->name, head->description, head->type, head->value, head->stat, head->c_stat, head->stat_mult, head->can_drop);
+	return (ret);
+}
+
+t_item	*copy_item_by_pos(t_item *src, int pos)
+{
+	int		i = 1;
+	t_item	*head;
+	t_item	*ret;
+
+	if (!src || pos < 1)
+		return (NULL);
+	head = src;
+	while (head && i != pos)
+	{
+		head = head->next;
+		i++;
+	}
+	if (i != pos || !head)
+		return (NULL);
 	ret = init_item(head->id, head->name, head->description, head->type, head->value, head->stat, head->c_stat, head->stat_mult, head->can_drop);
 	return (ret);
 }

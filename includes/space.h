@@ -11,18 +11,9 @@
 #include <fcntl.h>
 #include <time.h>
 
-#define DEBUG 1
+#include "enums.h"
 
-typedef enum e_stat_type
-{
-    STAT_NONE,
-    STAT_INTELLIGENCE,
-    STAT_STRENGTH,
-    STAT_PERCEPTION,
-    STAT_CHARISMA,
-    STAT_STEALTH,
-    STAT_SPEED
-}   t_stat_type;
+#define DEBUG 1
 
 typedef struct	s_char
 {
@@ -79,11 +70,26 @@ typedef struct	s_location
 	struct s_option		**options;
 	char				**enemies;
 	struct s_char		**characters;
+	struct s_inventory	*resources;
+	struct s_building	*buildings;
+	int					can_build;
 	int					x;
 	int					y;
 	struct s_location	*next;
 	struct s_location	*prev;
 }	t_location;
+
+typedef struct s_building
+{
+	char				*name;
+	char				*description;
+	t_inventory			*resources;
+	t_building_type		type;
+	int					id;
+	struct s_building	*next;
+	struct s_building	*prev;
+}	t_building;
+
 
 typedef struct s_option
 {
@@ -120,6 +126,7 @@ typedef struct s_data
 {
 	struct s_char 			*char_main;
 	struct s_char			*enemies;
+	struct s_char			*npc;
 	struct s_inventory		*inventory;
 	struct s_location		*map;
 	int						map_width;
@@ -142,7 +149,7 @@ t_dialogue	*init_dialogue(t_data *data, char *text);
 t_option	*init_option(char *text, int skill_check, int req, t_stat_type stat, unsigned long xp);
 
 // init location
-t_location	*init_location_plains(int x, int y);
+t_location	*init_location_plains(t_data *data, int x, int y);
 
 // init enemy
 t_char		*init_goblin(t_data *data);
@@ -159,6 +166,7 @@ t_char		*get_char_by_pos(t_char *c, int pos);
 char		*get_stat_name(t_stat_type stat);
 int 		get_char_stat(t_char *c, t_stat_type stat);
 t_item		*copy_item_by_id(t_item *src, unsigned long id);
+t_item		*copy_item_by_pos(t_item *src, int pos);
 t_item		*get_item_by_pos(t_item *src, int pos);
 int			get_item_pos_by_name(t_item *src, char *name);
 t_item		*get_item_by_name(t_item *src, char *name);
@@ -188,6 +196,7 @@ char		*ft_substr(char* arr, int start, int len);
 char 		*ft_strdup(char *s);
 int			ptr_arr_len(void **arr);
 t_option	**add_option(t_option **arr, char *text, int skill_check, int req, t_stat_type type, unsigned long xp);
+t_option	**add_option_no_free(t_option **arr, char *text, int skill_check, int req, t_stat_type type, unsigned long xp);
 int 		rand_range(int min, int max);
 char 		*format_width(const char *src, size_t size);
 char		*strjoin(char *s1, char *s2);
@@ -198,17 +207,18 @@ int			battle(t_data *data, t_char *main, t_char *enemy);
 // location
 void		handle_location_option(t_data *data, t_location *location, t_option **options, int i);
 int			location_add_character(t_location *location, t_char *c);
+int			location_gather_resources(t_data *data, t_char *c, t_location *location);
 
 // item
 void		add_item(t_item *dst, t_item *item);
-int			inventory_add_item(t_inventory *inv, t_item *item);
+int			inventory_add_item(t_inventory *inv, t_item *item, int display);
 int			inventory_remove_item(t_inventory *inv, unsigned long id);
 int			equip_weapon_from_inv(t_char *c, t_inventory *inv, unsigned long id);
 int			unequip_weapon(t_char *c);
 void		print_inventory(t_inventory *inv);
 int			item_stat(t_char *c, t_item *item);
-int			inventory_transfer_item(t_inventory *dst, t_inventory *src, unsigned long id);
-int			inventory_transfer_all(t_inventory *dst, t_inventory *src);
+int			inventory_transfer_item(t_inventory *dst, t_inventory *src, unsigned long id, int display);
+int			inventory_transfer_all(t_inventory *dst, t_inventory *src, int display);
 
 // character
 void		character_heal(t_char *c, int amount);

@@ -8,15 +8,17 @@ void	display_location(t_data *data)
 	int			i;
 	int			owned = 0;
 
-	if (!data)
+	if (!data || !data->current_location)
 		return ;
 	location = data->current_location;
 	option = -1;
 	if (location->characters)
 	{
 		owned = 1;
-		options = add_option(location->options, "talk", 0, 0, STAT_NONE, 0);
+		options = add_option_no_free(location->options, "talk", 0, 0, STAT_NONE, 0);
 	}
+	if (location->can_build)
+		options = add_option(options, "build", 0, 0, STAT_NONE, 0);
 	else 
 		options = location->options;
 	while (option <= 0 || option > i)
@@ -113,7 +115,7 @@ void	display_item(t_data *data, t_char *c, t_inventory *inv, t_item *item, int p
 			else if (!strcmp(options[option], "buy"))
 				character_trade_item(data->char_main, c, item);
 			else if (!strcmp(options[option], "take"))
-				inventory_transfer_item(c->inventory, inv, item->id);
+				inventory_transfer_item(c->inventory, inv, item->id, 1);
 			else if (!strcmp(options[option], "drop"))
 				inventory_remove_item(c->inventory, item->id);
 			else if (!strcmp(options[option], "back"))

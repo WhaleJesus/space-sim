@@ -35,11 +35,49 @@ int	ptr_arr_len(void **arr)
 t_option	**add_option(t_option **arr, char *text, int skill_check, int req, t_stat_type type, unsigned long xp)
 {
 	t_option	**new_arr;
-	int			arr_len = ptr_arr_len((void **)arr);
+	int			arr_len;
 	int			i = 0;
 
 	if (!arr)
 		return (NULL);
+	arr_len = ptr_arr_len((void **)arr);
+	new_arr = malloc(sizeof(t_option *) * (arr_len + 2));
+	if (!new_arr)
+		return (NULL);
+	while (arr[i])
+	{
+		if (strcmp(arr[i]->text, "exit"))
+			new_arr[i] = copy_option(arr[i]);
+		else 
+			new_arr[i] = init_option(text, skill_check, req, type, xp);
+		if (!new_arr[i])
+		{
+			free_option_array(new_arr);
+			return (NULL);
+		}
+		i++;
+	}
+	new_arr[i] = init_option("exit", 0, 0, STAT_NONE, 0);
+	if (!new_arr[i])
+	{
+		free_option_array(new_arr);
+		return (NULL);
+	}
+	i++;
+	new_arr[i] = NULL;
+	free_option_array(arr);
+	return (new_arr);
+}
+
+t_option	**add_option_no_free(t_option **arr, char *text, int skill_check, int req, t_stat_type type, unsigned long xp)
+{
+	t_option	**new_arr;
+	int			arr_len;
+	int			i = 0;
+
+	if (!arr)
+		return (NULL);
+	arr_len = ptr_arr_len((void **)arr);
 	new_arr = malloc(sizeof(t_option *) * (arr_len + 2));
 	if (!new_arr)
 		return (NULL);
